@@ -1,0 +1,413 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		C550FC861B0E59FE00ECF2FC /* MDCloudKit.h in Headers */ = {isa = PBXBuildFile; fileRef = C550FC851B0E59FE00ECF2FC /* MDCloudKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C550FC8C1B0E59FE00ECF2FC /* MDCloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C550FC801B0E59FE00ECF2FC /* MDCloudKit.framework */; };
+		C550FC931B0E59FE00ECF2FC /* MDCloudKitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C550FC921B0E59FE00ECF2FC /* MDCloudKitTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C550FC8D1B0E59FE00ECF2FC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C550FC771B0E59FE00ECF2FC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C550FC7F1B0E59FE00ECF2FC;
+			remoteInfo = MDCloudKit;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		C550FC801B0E59FE00ECF2FC /* MDCloudKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MDCloudKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C550FC841B0E59FE00ECF2FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C550FC851B0E59FE00ECF2FC /* MDCloudKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MDCloudKit.h; sourceTree = "<group>"; };
+		C550FC8B1B0E59FE00ECF2FC /* MDCloudKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MDCloudKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C550FC911B0E59FE00ECF2FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C550FC921B0E59FE00ECF2FC /* MDCloudKitTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MDCloudKitTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C550FC7C1B0E59FE00ECF2FC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C550FC881B0E59FE00ECF2FC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C550FC8C1B0E59FE00ECF2FC /* MDCloudKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		C550FC761B0E59FE00ECF2FC = {
+			isa = PBXGroup;
+			children = (
+				C550FC821B0E59FE00ECF2FC /* MDCloudKit */,
+				C550FC8F1B0E59FE00ECF2FC /* MDCloudKitTests */,
+				C550FC811B0E59FE00ECF2FC /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C550FC811B0E59FE00ECF2FC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C550FC801B0E59FE00ECF2FC /* MDCloudKit.framework */,
+				C550FC8B1B0E59FE00ECF2FC /* MDCloudKitTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C550FC821B0E59FE00ECF2FC /* MDCloudKit */ = {
+			isa = PBXGroup;
+			children = (
+				C550FC851B0E59FE00ECF2FC /* MDCloudKit.h */,
+				C550FC831B0E59FE00ECF2FC /* Supporting Files */,
+			);
+			path = MDCloudKit;
+			sourceTree = "<group>";
+		};
+		C550FC831B0E59FE00ECF2FC /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				C550FC841B0E59FE00ECF2FC /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C550FC8F1B0E59FE00ECF2FC /* MDCloudKitTests */ = {
+			isa = PBXGroup;
+			children = (
+				C550FC921B0E59FE00ECF2FC /* MDCloudKitTests.m */,
+				C550FC901B0E59FE00ECF2FC /* Supporting Files */,
+			);
+			path = MDCloudKitTests;
+			sourceTree = "<group>";
+		};
+		C550FC901B0E59FE00ECF2FC /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				C550FC911B0E59FE00ECF2FC /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		C550FC7D1B0E59FE00ECF2FC /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C550FC861B0E59FE00ECF2FC /* MDCloudKit.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		C550FC7F1B0E59FE00ECF2FC /* MDCloudKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C550FC961B0E59FE00ECF2FC /* Build configuration list for PBXNativeTarget "MDCloudKit" */;
+			buildPhases = (
+				C550FC7B1B0E59FE00ECF2FC /* Sources */,
+				C550FC7C1B0E59FE00ECF2FC /* Frameworks */,
+				C550FC7D1B0E59FE00ECF2FC /* Headers */,
+				C550FC7E1B0E59FE00ECF2FC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MDCloudKit;
+			productName = MDCloudKit;
+			productReference = C550FC801B0E59FE00ECF2FC /* MDCloudKit.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		C550FC8A1B0E59FE00ECF2FC /* MDCloudKitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C550FC991B0E59FE00ECF2FC /* Build configuration list for PBXNativeTarget "MDCloudKitTests" */;
+			buildPhases = (
+				C550FC871B0E59FE00ECF2FC /* Sources */,
+				C550FC881B0E59FE00ECF2FC /* Frameworks */,
+				C550FC891B0E59FE00ECF2FC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C550FC8E1B0E59FE00ECF2FC /* PBXTargetDependency */,
+			);
+			name = MDCloudKitTests;
+			productName = MDCloudKitTests;
+			productReference = C550FC8B1B0E59FE00ECF2FC /* MDCloudKitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C550FC771B0E59FE00ECF2FC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0630;
+				ORGANIZATIONNAME = "MOEDAE LLC";
+				TargetAttributes = {
+					C550FC7F1B0E59FE00ECF2FC = {
+						CreatedOnToolsVersion = 6.3.2;
+					};
+					C550FC8A1B0E59FE00ECF2FC = {
+						CreatedOnToolsVersion = 6.3.2;
+					};
+				};
+			};
+			buildConfigurationList = C550FC7A1B0E59FE00ECF2FC /* Build configuration list for PBXProject "MDCloudKit" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = C550FC761B0E59FE00ECF2FC;
+			productRefGroup = C550FC811B0E59FE00ECF2FC /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C550FC7F1B0E59FE00ECF2FC /* MDCloudKit */,
+				C550FC8A1B0E59FE00ECF2FC /* MDCloudKitTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C550FC7E1B0E59FE00ECF2FC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C550FC891B0E59FE00ECF2FC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C550FC7B1B0E59FE00ECF2FC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C550FC871B0E59FE00ECF2FC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C550FC931B0E59FE00ECF2FC /* MDCloudKitTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C550FC8E1B0E59FE00ECF2FC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C550FC7F1B0E59FE00ECF2FC /* MDCloudKit */;
+			targetProxy = C550FC8D1B0E59FE00ECF2FC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		C550FC941B0E59FE00ECF2FC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		C550FC951B0E59FE00ECF2FC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		C550FC971B0E59FE00ECF2FC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = MDCloudKit/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		C550FC981B0E59FE00ECF2FC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = MDCloudKit/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		C550FC9A1B0E59FE00ECF2FC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = MDCloudKitTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		C550FC9B1B0E59FE00ECF2FC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = MDCloudKitTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C550FC7A1B0E59FE00ECF2FC /* Build configuration list for PBXProject "MDCloudKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C550FC941B0E59FE00ECF2FC /* Debug */,
+				C550FC951B0E59FE00ECF2FC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C550FC961B0E59FE00ECF2FC /* Build configuration list for PBXNativeTarget "MDCloudKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C550FC971B0E59FE00ECF2FC /* Debug */,
+				C550FC981B0E59FE00ECF2FC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		C550FC991B0E59FE00ECF2FC /* Build configuration list for PBXNativeTarget "MDCloudKitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C550FC9A1B0E59FE00ECF2FC /* Debug */,
+				C550FC9B1B0E59FE00ECF2FC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C550FC771B0E59FE00ECF2FC /* Project object */;
+}
