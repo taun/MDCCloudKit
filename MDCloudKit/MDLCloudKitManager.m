@@ -3,6 +3,8 @@
 //
 
 @import CloudKit;
+@import QuartzCore;
+
 
 #import "MDLCloudKitManager.h"
 
@@ -148,6 +150,32 @@
     }];
 }
 
+- (void)savePublicRecords:(NSArray *)records withCompletionHandler:(void (^)(NSError *error))completionHandler
+{
+    CKModifyRecordsOperation* saveOperation = [[CKModifyRecordsOperation alloc]initWithRecordsToSave: records recordIDsToDelete: nil];
+    saveOperation.modifyRecordsCompletionBlock = ^( NSArray *savedRecords, NSArray *deletedRecordIDs, NSError *operationError) {
+        if (operationError)
+        {
+            // In your app, handle this error awesomely.
+            NSLog(@"An error occured in %@: %@", NSStringFromSelector(_cmd), operationError);
+            
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                completionHandler(operationError);
+            });
+        }
+        else
+        {
+            NSLog(@"Successfully saved records");
+            
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                completionHandler(operationError);
+            });
+        }
+    };
+    
+    [self.publicDatabase addOperation: saveOperation];
+}
+
 - (void)deletePublicRecord:(CKRecord *)record {
     [self.publicDatabase deleteRecordWithID: record.recordID completionHandler:^(CKRecordID *recordID, NSError *error) {
         if (error) {
@@ -158,6 +186,22 @@
             NSLog(@"Successfully deleted record");
         }
     }];
+}
+
+- (void)deletePublicRecords:(NSArray *)records withCompletionHandler:(void (^)(NSError *error))completionHandler
+{
+    CKModifyRecordsOperation* deleteOperation = [[CKModifyRecordsOperation alloc]initWithRecordsToSave: nil recordIDsToDelete: records];
+    
+    deleteOperation.modifyRecordsCompletionBlock = ^( NSArray *savedRecords, NSArray *deletedRecordIDs, NSError *operationError) {
+        if (operationError) {
+            // In your app, handle this error. Please.
+            NSLog(@"An error occured in %@: %@", NSStringFromSelector(_cmd), operationError);
+            abort();
+        } else {
+            NSLog(@"Successfully deleted records");
+        }
+    };
+    [self.publicDatabase addOperation: deleteOperation];
 }
 
 -(void)fetchPublicRecordsWithPredicate:(NSPredicate *)predicate sortDescriptor:(NSArray *)descriptors cloudKeys:(NSArray *)cloudKeys completionHandler:(void (^)(NSArray *, NSError *))completionHandler

@@ -2,7 +2,6 @@
 //  Copyright (c) 2014 MOEDAE LLC. All rights reserved.
 //
 
-@import UIKit;
 @import Foundation;
 @import CloudKit;
 
@@ -21,7 +20,11 @@
 - (void)queryForRecordsNearLocation:(CLLocation *)location completionHandler:(void (^)(NSArray *records))completionHandler;
 
 - (void)savePublicRecord:(CKRecord *)record withCompletionHandler:(void (^)(NSError* error))completionHandler;
+- (void)savePublicRecords:(NSArray *)records withCompletionHandler:(void (^)(NSError *error))completionHandler;
+
 - (void)deletePublicRecord:(CKRecord *)record;
+- (void)deletePublicRecords:(NSArray *)records withCompletionHandler:(void (^)(NSError *error))completionHandler;
+
 - (void)fetchPublicRecordsWithPredicate: (NSPredicate*)predicate sortDescriptor: (NSArray*) descriptors cloudKeys: (NSArray*)cloudKeys completionHandler:(void (^)(NSArray *records, NSError* error))completionHandler;
 - (void)fetchPublicRecordsWithType:(NSString *)recordType predicate: (NSPredicate*)predicate sortDescriptor: (NSArray*) descriptors cloudKeys: (NSArray*)cloudKeys completionHandler:(void (^)(NSArray *records, NSError* error))completionHandler;
 - (void)queryForPublicRecordsWithReferenceNamed:(NSString *)referenceRecordName completionHandler:(void (^)(NSArray *records))completionHandler;

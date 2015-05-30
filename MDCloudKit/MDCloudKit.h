@@ -6,8 +6,6 @@
 //  Copyright (c) 2015 MOEDAE LLC. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
 //! Project version number for MDCloudKit.
 FOUNDATION_EXPORT double MDCloudKitVersionNumber;
 

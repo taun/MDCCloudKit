@@ -13,10 +13,10 @@
                                                                     UISearchBarDelegate>
 
 @property (nonatomic,strong) id<MDCKCloudManagerAppModelProtocol>           appModel;
-@property(nonatomic,strong) NSArray                        *publicCloudRecords;
-@property(nonatomic,strong)NSArray                          *cloudDownloadKeys;
-@property(nonatomic,assign,getter=isNetworkConnected) BOOL  networkConnected;
-@property(nonatomic,strong) UISearchController             *searchController;
+@property(nonatomic,strong) NSArray                                         *publicCloudRecords;
+@property(nonatomic,strong) NSArray                                         *cloudDownloadKeys;
+@property(nonatomic,assign,getter=isNetworkConnected) BOOL                  networkConnected;
+@property(nonatomic,strong) UISearchController                              *searchController;
 
 @property (weak, nonatomic) IBOutlet UICollectionView                       *collectionView;
 
@@ -27,7 +27,7 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem                        *getSelectedButton;
 
 -(void)setupSearchController;
--(void) fetchCloudRecordsWithPredicate: (NSPredicate*)predicate andSortDescriptors: (NSArray*)descriptors;
+-(void)fetchCloudRecordsWithPredicate: (NSPredicate*)predicate andSortDescriptors: (NSArray*)descriptors;
 
 - (IBAction)downloadSelected:(id)sender;
 - (IBAction)activateSearch:(id)sender;
