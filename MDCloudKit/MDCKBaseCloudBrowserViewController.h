@@ -26,9 +26,9 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem                        *searchButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem                        *getSelectedButton;
 
--(void)setupSearchController;
+-(void)updateCollectionViewOffsetForNavAndSearch;
 -(void)fetchCloudRecordsWithPredicate: (NSPredicate*)predicate andSortDescriptors: (NSArray*)descriptors;
-
+-(void)getDefaultSearchResults;
 - (IBAction)downloadSelected:(id)sender;
 - (IBAction)activateSearch:(id)sender;
 

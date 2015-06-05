@@ -14,7 +14,6 @@
 
 @implementation MDCKBaseCloudBrowserViewController
 
-
 -(void) fetchCloudRecordsWithPredicate: (NSPredicate*)predicate andSortDescriptors: (NSArray*)descriptors
 {
     self.getSelectedButton.enabled = NO;
@@ -73,8 +72,10 @@
      }];
 }
 
--(void)setupSearchController
+-(UISearchController*)searchController
 {
+    if (!_searchController)
+    {
     _searchController = [[UISearchController alloc] initWithSearchResultsController: nil];
     _searchController.searchResultsUpdater = self;
     _searchController.dimsBackgroundDuringPresentation = NO;
@@ -90,12 +91,12 @@
     self.searchBarContainerHeightConstraint.constant = 0;
     searchBar.delegate = self;
     _searchController.delegate = self;
+    }
+    return _searchController;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    [self setupSearchController];
     
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible: YES];
     [self.activityIndicator startAnimating];
@@ -105,15 +106,41 @@
 {
     [super viewWillAppear:animated];
     
-    [self updateCollectionViewOffsetForNavAndSearch];
 }
 
 -(void) viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     
-    [self updateSearchResultsForSearchController: self.searchController];
+    [self updateCollectionViewOffsetForNavAndSearch];
+    if (self.searchController.isActive)
+    {
+        [self updateSearchResultsForSearchController: self.searchController];
+    }
+    else
+    {
+        [self getDefaultSearchResults];
+    }
 }
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    self.searchController.delegate = nil;
+    self.searchController.active = NO;
+   
+//    [UIView performWithoutAnimation:^{
+//        [self.searchController.searchBar removeFromSuperview];
+//    }];
+}
+
+//-(void)viewDidDisappear:(BOOL)animated
+//{
+//    [self.searchController.searchBar removeFromSuperview];
+//    self.searchController.searchBar.delegate = nil;
+//    self.searchController.delegate = nil;
+//    self.searchController = nil;
+//}
 
 -(void) viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
@@ -158,6 +185,7 @@
 -(void)presentSearchController:(UISearchController *)searchController
 {
 }
+
 -(void)didPresentSearchController:(UISearchController *)searchController
 {
     //    searchController.searchBar.showsCancelButton = NO;
@@ -187,6 +215,9 @@
 {
 }
 
+-(void)getDefaultSearchResults
+{
+}
 
 #pragma mark - FlowLayoutDelegate
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
