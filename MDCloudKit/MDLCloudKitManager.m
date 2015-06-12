@@ -83,7 +83,7 @@
 
 - (void)fetchRecordWithID:(NSString *)recordID completionHandler:(void (^)(CKRecord *record))completionHandler {
     
-    CKRecordID *current = [[CKRecordID alloc] initWithRecordName:recordID];
+    CKRecordID *current = [[CKRecordID alloc] initWithRecordName: recordID];
     [self.publicDatabase fetchRecordWithID:current completionHandler:^(CKRecord *record, NSError *error) {
         
         if (error) {
@@ -96,6 +96,16 @@
             });
         }
     }];
+}
+
+- (void)fetchRecordsWithIDs:(NSArray *)recordIDObjects desiredKeys: (NSArray*)keys perRecordHandler: (void (^)(CKRecord *record, CKRecordID *recordID, NSError *error))perRecordHandler completionHandler:(void (^)(NSDictionary *recordsByRecordID, NSError *operationError))completionHandler
+{
+    CKFetchRecordsOperation* fetchRecordsOp = [[CKFetchRecordsOperation alloc]initWithRecordIDs: recordIDObjects];
+    fetchRecordsOp.database = self.publicDatabase;
+    fetchRecordsOp.perRecordCompletionBlock = perRecordHandler;
+    fetchRecordsOp.fetchRecordsCompletionBlock = completionHandler;
+    fetchRecordsOp.desiredKeys = keys;
+    [self.publicDatabase addOperation: fetchRecordsOp];
 }
 
 - (void)queryForRecordsNearLocation:(CLLocation *)location completionHandler:(void (^)(NSArray *records))completionHandler {
