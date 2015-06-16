@@ -113,6 +113,7 @@
     [super viewDidAppear:animated];
     
     [self updateCollectionViewOffsetForNavAndSearch];
+    self.searchController.delegate = self;
     if (self.searchController.isActive)
     {
         [self updateSearchResultsForSearchController: self.searchController];
@@ -127,7 +128,7 @@
 {
     [super viewWillDisappear:animated];
     self.searchController.delegate = nil;
-    self.searchController.active = NO;
+//    self.searchController.active = NO;
    
 //    [UIView performWithoutAnimation:^{
 //        [self.searchController.searchBar removeFromSuperview];
