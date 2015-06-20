@@ -181,6 +181,7 @@
 				TargetAttributes = {
 					C550FC7F1B0E59FE00ECF2FC = {
 						CreatedOnToolsVersion = 6.3.2;
+						DevelopmentTeam = 6569EWWSLR;
 					};
 					C550FC8A1B0E59FE00ECF2FC = {
 						CreatedOnToolsVersion = 6.3.2;
@@ -342,6 +343,7 @@
 		C550FC971B0E59FE00ECF2FC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -357,6 +359,7 @@
 		C550FC981B0E59FE00ECF2FC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;

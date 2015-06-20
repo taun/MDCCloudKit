@@ -42,20 +42,55 @@
                  self.searchButton.enabled = YES;
              }
              
-         } else
+         }
+         else
          {
              self.networkConnected = NO;
              NSString *title;
              NSString *message;
+             NSLog(@"%@ %@",NSStringFromSelector(_cmd),[error.userInfo debugDescription]);
+             CKErrorCode code = error.code;
              
-             if (error.code == 4)
-             {
-                 title = NSLocalizedString(@"Can't Browse", nil);
-                 message = error.localizedDescription;
-             } else
-             {
-                 title = NSLocalizedString(@"Can't Browse", nil);
-                 message = error.localizedDescription;
+             switch (code) {
+                 case CKErrorInternalError:
+                     title = NSLocalizedString(@"Network problem", nil);
+                     message = @"Please try again in couple of minutes";
+                     break;
+                     
+                 case CKErrorPartialFailure:
+                     title = NSLocalizedString(@"Network problem", nil);
+                     message = @"Please try again in couple of minutes";
+                     break;
+                     
+                 case CKErrorNetworkUnavailable:
+                     title = NSLocalizedString(@"No Network", nil);
+                     message = @"Please try again when connected to a network";
+                     break;
+                     
+                 case CKErrorNetworkFailure:
+                     title = NSLocalizedString(@"Network problem", nil);
+                     message = @"Please try again in couple of minutes";
+                     break;
+                     
+                 case CKErrorServiceUnavailable:
+                     title = NSLocalizedString(@"Cloud Unavailable", nil);
+                     message = @"iCloud is temporarily unavailable. Please try again in couple of minutes";
+                     break;
+                     
+                 case CKErrorRequestRateLimited:
+                     title = NSLocalizedString(@"Cloud Unavailable", nil);
+                     message = [NSString stringWithFormat: @"iCloud is temporarily unavailable. Please try again in %@ seconds",error.userInfo[@"CKRetryAfter"]];
+                     break;
+                     
+                 case CKErrorZoneBusy:
+                     title = NSLocalizedString(@"Too Much Traffic", nil);
+                     message = @"Please try again in couple of minutes";
+                     break;
+                     
+                 default:
+                     title = NSLocalizedString(@"Problem with the Cloud", nil);
+                     message = @"Please try again later.";
+                     break;
              }
              
              NSString *okActionTitle = NSLocalizedString(@"OK", nil);
