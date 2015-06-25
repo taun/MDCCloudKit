@@ -216,10 +216,10 @@
 
 -(void)fetchPublicRecordsWithPredicate:(NSPredicate *)predicate sortDescriptor:(NSArray *)descriptors cloudKeys:(NSArray *)cloudKeys completionHandler:(void (^)(NSArray *, NSError *))completionHandler
 {
-    [self fetchPublicRecordsWithType: self.cloudKitRecordType predicate: predicate sortDescriptor: descriptors cloudKeys: cloudKeys completionHandler: completionHandler];
+    [self fetchPublicRecordsWithType: self.cloudKitRecordType predicate: predicate sortDescriptors: descriptors cloudKeys: cloudKeys completionHandler: completionHandler];
 }
 
-- (void)fetchPublicRecordsWithType:(NSString *)recordType predicate: (NSPredicate*)predicate sortDescriptor: (NSArray*) descriptors cloudKeys: (NSArray*)cloudKeys completionHandler:(void (^)(NSArray *records, NSError* error))completionHandler
+- (void)fetchPublicRecordsWithType:(NSString *)recordType predicate: (NSPredicate*)predicate sortDescriptors: (NSArray*) descriptors cloudKeys: (NSArray*)cloudKeys completionHandler:(void (^)(NSArray *records, NSError* error))completionHandler
 {
     if (!predicate) {
         predicate = [NSPredicate predicateWithValue: YES];
