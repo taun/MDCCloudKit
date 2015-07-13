@@ -7,6 +7,7 @@
 //
 
 #import "MDCKBaseCloudBrowserViewController.h"
+#import "MDLCloudKitManager.h"
 
 @interface MDCKBaseCloudBrowserViewController ()
 

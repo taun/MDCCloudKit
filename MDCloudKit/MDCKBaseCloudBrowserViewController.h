@@ -3,7 +3,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <MDCloudKit/MDCKCloudManagerAppModelProtocol.H>
+#import "MDCKCloudManagerAppModelProtocol.H"
 
 @interface MDCKBaseCloudBrowserViewController : UIViewController <UICollectionViewDataSource,
                                                                     UICollectionViewDelegate,

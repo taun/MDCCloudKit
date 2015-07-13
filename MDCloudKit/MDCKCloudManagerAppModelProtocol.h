@@ -3,7 +3,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <MDCloudKit/MDLCloudKitManager.h>
+
+@class MDLCloudKitManager;
 
 @protocol MDCKCloudManagerAppModelProtocol <NSObject>
 
