@@ -20,7 +20,7 @@
 {
     self.getSelectedButton.enabled = NO;
     
-    [self.appModel.cloudManager fetchPublicRecordsWithPredicate: predicate sortDescriptor: descriptors cloudKeys: self.cloudDownloadKeys completionHandler:^(NSArray *records, NSError* error)
+    [self.appModel.cloudKitManager fetchPublicRecordsWithPredicate: predicate sortDescriptor: descriptors cloudKeys: self.cloudDownloadKeys completionHandler:^(NSArray *records, NSError* error)
      {
          [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible: NO];
          [self.activityIndicator stopAnimating];
@@ -132,9 +132,6 @@
     [super viewDidLoad];
     
     [self setupSearchController];
-    
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible: YES];
-    [self.activityIndicator startAnimating];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -147,9 +144,48 @@
 -(void) viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
-    [self updateSearchResultsForSearchController: self.searchController];
 }
+
+-(void)showAlertActionsToAddiCloud: (id)sender
+{
+    NSString* title = NSLocalizedString(@"iCloud Share", nil);
+    NSString* message = NSLocalizedString(@"You must have your device logged into iCloud", nil);
+    
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle: title
+                                                                   message: message
+                                                            preferredStyle: UIAlertControllerStyleActionSheet];
+    
+    UIAlertController* __weak weakAlert = alert;
+    
+    //    ALAuthorizationStatus cameraAuthStatus = [ALAssetsLibrary authorizationStatus];
+    
+    UIAlertAction* fractalCloud = [UIAlertAction actionWithTitle:@"Go to iCloud Settings" style:UIAlertActionStyleDefault
+                                                         handler:^(UIAlertAction * action)
+                                   {
+                                       [weakAlert dismissViewControllerAnimated:YES completion:nil]; // because of popover mode
+                                       [self sendUserToSystemiCloudSettings: sender];
+                                   }];
+    [alert addAction: fractalCloud];
+    
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Later Maybe" style:UIAlertActionStyleCancel
+                                                          handler:^(UIAlertAction * action)
+                                    {
+                                        [weakAlert dismissViewControllerAnimated:YES completion:nil]; // because of popover mode
+                                    }];
+    [alert addAction: defaultAction];
+    
+    UIPopoverPresentationController* ppc = alert.popoverPresentationController;
+    ppc.barButtonItem = sender;
+    ppc.permittedArrowDirections = UIPopoverArrowDirectionAny;
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+-(void)sendUserToSystemiCloudSettings: (id)sender
+{
+    [[UIApplication sharedApplication] openURL: [NSURL URLWithString:@"prefs:root=iCloud"]];
+}
+
 
 -(void) viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {

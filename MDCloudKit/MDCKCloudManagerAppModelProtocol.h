@@ -8,6 +8,6 @@
 
 @protocol MDCKCloudManagerAppModelProtocol <NSObject>
 
-@property(nonatomic,readonly) MDLCloudKitManager                *cloudManager;
+@property(nonatomic,readonly) MDLCloudKitManager                *cloudKitManager;
 
 @end

@@ -20,7 +20,8 @@
 - (void)fetchRecordWithID:(NSString *)recordID completionHandler:(void (^)(CKRecord *record))completionHandler;
 - (void)queryForRecordsNearLocation:(CLLocation *)location completionHandler:(void (^)(NSArray *records))completionHandler;
 
-- (void)savePublicRecord:(CKRecord *)record withCompletionHandler:(void (^)(NSError* error))completionHandler;
+- (void)savePublicRecords:(NSArray *)records withCompletionHandler: (void (^ )(void))completionHandler;
+- (void)savePublicRecord:(CKRecord *)record withCompletionHandler: (void (^)(NSError* error))completionHandler;
 - (void)deletePublicRecord:(CKRecord *)record;
 - (void)fetchPublicRecordsWithPredicate: (NSPredicate*)predicate sortDescriptor: (NSArray*) descriptors cloudKeys: (NSArray*)cloudKeys completionHandler:(void (^)(NSArray *records, NSError* error))completionHandler;
 - (void)fetchPublicRecordsWithType:(NSString *)recordType predicate: (NSPredicate*)predicate sortDescriptor: (NSArray*) descriptors cloudKeys: (NSArray*)cloudKeys completionHandler:(void (^)(NSArray *records, NSError* error))completionHandler;

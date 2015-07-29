@@ -126,6 +126,15 @@
     [self.publicDatabase addOperation:queryOperation];
 }
 
+- (void)savePublicRecords:(NSArray *)records withCompletionHandler: (void (^ )(void)) completionBlock
+{
+    CKModifyRecordsOperation* bulkSaveOperation = [[CKModifyRecordsOperation alloc]initWithRecordsToSave: records recordIDsToDelete: nil];
+    bulkSaveOperation.completionBlock = completionBlock;
+    
+    [self.publicDatabase addOperation: bulkSaveOperation];
+}
+
+
 - (void)savePublicRecord:(CKRecord *)record withCompletionHandler:(void (^)(NSError* error))completionHandler
 {
     [self.publicDatabase saveRecord: record completionHandler:^(CKRecord *cRecord, NSError *error) {
