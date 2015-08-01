@@ -8,6 +8,8 @@
 
 #import "MDCKBaseCloudBrowserViewController.h"
 
+#import <MDCloudKit/MDLCloudKitManager.h>
+
 @interface MDCKBaseCloudBrowserViewController ()
 
 @end
@@ -18,7 +20,7 @@
 {
     self.getSelectedButton.enabled = NO;
     
-    [self.appModel.cloudManager fetchPublicRecordsWithPredicate: predicate sortDescriptor: descriptors cloudKeys: self.cloudDownloadKeys completionHandler:^(NSArray *records, NSError* error)
+    [self.appModel.cloudKitManager fetchPublicRecordsWithPredicate: predicate sortDescriptor: descriptors cloudKeys: self.cloudDownloadKeys completionHandler:^(NSArray *records, NSError* error)
      {
          [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible: NO];
          [self.activityIndicator stopAnimating];
@@ -46,15 +48,49 @@
              self.networkConnected = NO;
              NSString *title;
              NSString *message;
+             NSLog(@"%@ %@",NSStringFromSelector(_cmd),[error.userInfo debugDescription]);
+             CKErrorCode code = error.code;
              
-             if (error.code == 4)
-             {
-                 title = NSLocalizedString(@"Can't Browse", nil);
-                 message = error.localizedDescription;
-             } else
-             {
-                 title = NSLocalizedString(@"Can't Browse", nil);
-                 message = error.localizedDescription;
+             switch (code) {
+                 case CKErrorInternalError:
+                     title = NSLocalizedString(@"Network problem", nil);
+                     message = @"Please try again in couple of minutes";
+                     break;
+                     
+                 case CKErrorPartialFailure:
+                     title = NSLocalizedString(@"Network problem", nil);
+                     message = @"Please try again in couple of minutes";
+                     break;
+                     
+                 case CKErrorNetworkUnavailable:
+                     title = NSLocalizedString(@"No Network", nil);
+                     message = @"Please try again when connected to a network";
+                     break;
+                     
+                 case CKErrorNetworkFailure:
+                     title = NSLocalizedString(@"Network problem", nil);
+                     message = @"Please try again in couple of minutes";
+                     break;
+                     
+                 case CKErrorServiceUnavailable:
+                     title = NSLocalizedString(@"Cloud Unavailable", nil);
+                     message = @"iCloud is temporarily unavailable. Please try again in couple of minutes";
+                     break;
+                     
+                 case CKErrorRequestRateLimited:
+                     title = NSLocalizedString(@"Cloud Unavailable", nil);
+                     message = [NSString stringWithFormat: @"iCloud is temporarily unavailable. Please try again in %@ seconds",error.userInfo[@"CKRetryAfter"]];
+                     break;
+                     
+                 case CKErrorZoneBusy:
+                     title = NSLocalizedString(@"Too Much Traffic", nil);
+                     message = @"Please try again in couple of minutes";
+                     break;
+                     
+                 default:
+                     title = NSLocalizedString(@"Problem with the Cloud", nil);
+                     message = @"Please try again later.";
+                     break;
              }
              
              NSString *okActionTitle = NSLocalizedString(@"OK", nil);
@@ -72,10 +108,8 @@
      }];
 }
 
--(UISearchController*)searchController
+-(void)setupSearchController
 {
-    if (!_searchController)
-    {
     _searchController = [[UISearchController alloc] initWithSearchResultsController: nil];
     _searchController.searchResultsUpdater = self;
     _searchController.dimsBackgroundDuringPresentation = NO;
@@ -91,57 +125,73 @@
     self.searchBarContainerHeightConstraint.constant = 0;
     searchBar.delegate = self;
     _searchController.delegate = self;
-    }
-    return _searchController;
 }
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible: YES];
-    [self.activityIndicator startAnimating];
+    [self setupSearchController];
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     
+    [self updateCollectionViewOffsetForNavAndSearch];
 }
 
 -(void) viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
-    [self updateCollectionViewOffsetForNavAndSearch];
-    self.searchController.delegate = self;
-    if (self.searchController.isActive)
-    {
-        [self updateSearchResultsForSearchController: self.searchController];
-    }
-    else
-    {
-        [self getDefaultSearchResults];
-    }
 }
+
+-(void)showAlertActionsToAddiCloud: (id)sender
+{
+    NSString* title = NSLocalizedString(@"iCloud Share", nil);
+    NSString* message = NSLocalizedString(@"You must have your device logged into iCloud", nil);
+    
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle: title
+                                                                   message: message
+                                                            preferredStyle: UIAlertControllerStyleActionSheet];
+    
+    UIAlertController* __weak weakAlert = alert;
+    
+    //    ALAuthorizationStatus cameraAuthStatus = [ALAssetsLibrary authorizationStatus];
+    
+    UIAlertAction* fractalCloud = [UIAlertAction actionWithTitle:@"Go to iCloud Settings" style:UIAlertActionStyleDefault
+                                                         handler:^(UIAlertAction * action)
+                                   {
+                                       [weakAlert dismissViewControllerAnimated:YES completion:nil]; // because of popover mode
+                                       [self sendUserToSystemiCloudSettings: sender];
+                                   }];
+    [alert addAction: fractalCloud];
+    
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Later Maybe" style:UIAlertActionStyleCancel
+                                                          handler:^(UIAlertAction * action)
+                                    {
+                                        [weakAlert dismissViewControllerAnimated:YES completion:nil]; // because of popover mode
+                                    }];
+    [alert addAction: defaultAction];
+    
+    UIPopoverPresentationController* ppc = alert.popoverPresentationController;
+    ppc.barButtonItem = sender;
+    ppc.permittedArrowDirections = UIPopoverArrowDirectionAny;
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+-(void)sendUserToSystemiCloudSettings: (id)sender
+{
+    [[UIApplication sharedApplication] openURL: [NSURL URLWithString:@"prefs:root=iCloud"]];
+}
+
 
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     self.searchController.delegate = nil;
-//    self.searchController.active = NO;
-   
-//    [UIView performWithoutAnimation:^{
-//        [self.searchController.searchBar removeFromSuperview];
-//    }];
 }
-
-//-(void)viewDidDisappear:(BOOL)animated
-//{
-//    [self.searchController.searchBar removeFromSuperview];
-//    self.searchController.searchBar.delegate = nil;
-//    self.searchController.delegate = nil;
-//    self.searchController = nil;
-//}
 
 -(void) viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {

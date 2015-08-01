@@ -38,7 +38,11 @@
     return self;
 }
 
-#pragma mark - sample cloud
+- (BOOL)isCloudAvailable {
+    return [[NSFileManager defaultManager] ubiquityIdentityToken] != nil;
+}
+
+#pragma mark - cloud user info
 
 - (void)requestDiscoverabilityPermission:(void (^)(BOOL discoverable)) completionHandler {
     

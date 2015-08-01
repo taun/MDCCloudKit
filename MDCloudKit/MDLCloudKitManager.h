@@ -7,8 +7,9 @@
 
 @interface MDLCloudKitManager : NSObject
 
-@property(nonatomic,strong)NSArray      *defaultSortDescriptors;
-@property(nonatomic,strong)NSString     *cloudSubscriptionIDKey;
+@property (nonatomic, readonly, getter=isCloudAvailable) BOOL   cloudAvailable;
+@property(nonatomic,strong)NSArray                              *defaultSortDescriptors;
+@property(nonatomic,strong)NSString                             *cloudSubscriptionIDKey;
 
 -(instancetype)initWithIdentifier: (NSString*)containerIdentifier andRecordType: (NSString*)cloudKitRecordType;
 
