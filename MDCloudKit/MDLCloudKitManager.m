@@ -96,6 +96,17 @@
     }];
 }
 
+- (void)fetchRecordsWithIDs:(NSArray *)recordIDObjects desiredKeys: (NSArray*)keys perRecordHandler: (void (^)(CKRecord *record, CKRecordID *recordID, NSError *error))perRecordHandler completionHandler:(void (^)(NSDictionary *recordsByRecordID, NSError *operationError))completionHandler
+{
+    CKFetchRecordsOperation* fetchRecordsOp = [[CKFetchRecordsOperation alloc]initWithRecordIDs: recordIDObjects];
+    fetchRecordsOp.database = self.publicDatabase;
+    fetchRecordsOp.perRecordCompletionBlock = perRecordHandler;
+    fetchRecordsOp.fetchRecordsCompletionBlock = completionHandler;
+    fetchRecordsOp.desiredKeys = keys;
+    [self.publicDatabase addOperation: fetchRecordsOp];
+}
+
+
 - (void)queryForRecordsNearLocation:(CLLocation *)location completionHandler:(void (^)(NSArray *records))completionHandler {
     
     CGFloat radiusInKilometers = 5;
@@ -126,14 +137,6 @@
     [self.publicDatabase addOperation:queryOperation];
 }
 
-- (void)savePublicRecords:(NSArray *)records withCompletionHandler: (void (^ )(void)) completionBlock
-{
-    CKModifyRecordsOperation* bulkSaveOperation = [[CKModifyRecordsOperation alloc]initWithRecordsToSave: records recordIDsToDelete: nil];
-    bulkSaveOperation.completionBlock = completionBlock;
-    
-    [self.publicDatabase addOperation: bulkSaveOperation];
-}
-
 
 - (void)savePublicRecord:(CKRecord *)record withCompletionHandler:(void (^)(NSError* error))completionHandler
 {
@@ -157,6 +160,32 @@
     }];
 }
 
+- (void)savePublicRecords:(NSArray *)records withCompletionHandler:(void (^)(NSError *error))completionHandler
+{
+    CKModifyRecordsOperation* saveOperation = [[CKModifyRecordsOperation alloc]initWithRecordsToSave: records recordIDsToDelete: nil];
+    saveOperation.modifyRecordsCompletionBlock = ^( NSArray *savedRecords, NSArray *deletedRecordIDs, NSError *operationError) {
+        if (operationError)
+        {
+            // In your app, handle this error awesomely.
+            NSLog(@"An error occured in %@: %@", NSStringFromSelector(_cmd), operationError);
+            
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                completionHandler(operationError);
+            });
+        }
+        else
+        {
+            NSLog(@"Successfully saved records");
+            
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                completionHandler(operationError);
+            });
+        }
+    };
+    
+    [self.publicDatabase addOperation: saveOperation];
+}
+
 - (void)deletePublicRecord:(CKRecord *)record {
     [self.publicDatabase deleteRecordWithID: record.recordID completionHandler:^(CKRecordID *recordID, NSError *error) {
         if (error) {
@@ -167,6 +196,22 @@
             NSLog(@"Successfully deleted record");
         }
     }];
+}
+
+- (void)deletePublicRecords:(NSArray *)records withCompletionHandler:(void (^)(NSError *error))completionHandler
+{
+    CKModifyRecordsOperation* deleteOperation = [[CKModifyRecordsOperation alloc]initWithRecordsToSave: nil recordIDsToDelete: records];
+    
+    deleteOperation.modifyRecordsCompletionBlock = ^( NSArray *savedRecords, NSArray *deletedRecordIDs, NSError *operationError) {
+        if (operationError) {
+            // In your app, handle this error. Please.
+            NSLog(@"An error occured in %@: %@", NSStringFromSelector(_cmd), operationError);
+            abort();
+        } else {
+            NSLog(@"Successfully deleted records");
+        }
+    };
+    [self.publicDatabase addOperation: deleteOperation];
 }
 
 -(void)fetchPublicRecordsWithPredicate:(NSPredicate *)predicate sortDescriptor:(NSArray *)descriptors cloudKeys:(NSArray *)cloudKeys completionHandler:(void (^)(NSArray *, NSError *))completionHandler
