@@ -5,6 +5,13 @@
 #import <UIKit/UIKit.h>
 #import "MDCKCloudManagerAppModelProtocol.H"
 
+/*!
+ Base class for searching CloudKit app public container.
+ 
+ Includes search and downloading.
+ 
+ Needs better search, categorisation by user, latest, rated? Categories need to be handled by a subclass or delegate.
+ */
 @interface MDCKBaseCloudBrowserViewController : UIViewController <UICollectionViewDataSource,
                                                                     UICollectionViewDelegate,
                                                                     UICollectionViewDelegateFlowLayout,
@@ -13,10 +20,10 @@
                                                                     UISearchBarDelegate>
 
 @property (nonatomic,strong) id<MDCKCloudManagerAppModelProtocol>           appModel;
-@property(nonatomic,strong) NSArray                        *publicCloudRecords;
-@property(nonatomic,strong)NSArray                          *cloudDownloadKeys;
-@property(nonatomic,assign,getter=isNetworkConnected) BOOL  networkConnected;
-@property(nonatomic,strong) UISearchController             *searchController;
+@property(nonatomic,strong) NSArray                                         *publicCloudRecords;
+@property(nonatomic,strong)NSArray                                          *cloudDownloadKeys;
+@property(nonatomic,assign,getter=isNetworkConnected) BOOL                  networkConnected;
+@property(nonatomic,strong) UISearchController                              *searchController;
 
 @property (weak, nonatomic) IBOutlet UICollectionView                       *collectionView;
 
