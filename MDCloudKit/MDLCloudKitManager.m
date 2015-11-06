@@ -214,12 +214,12 @@
     [self.publicDatabase addOperation: deleteOperation];
 }
 
--(void)fetchPublicRecordsWithPredicate:(NSPredicate *)predicate sortDescriptor:(NSArray *)descriptors cloudKeys:(NSArray *)cloudKeys completionHandler:(void (^)(NSArray *, NSError *))completionHandler
+-(void)fetchPublicRecordsWithPredicate:(NSPredicate *)predicate sortDescriptors:(NSArray *)descriptors cloudKeys:(NSArray *)cloudKeys perRecordBlock:(void (^)(CKRecord *record))recordBlock completionHandler:(void (^)(NSArray *, NSError *))completionHandler
 {
-    [self fetchPublicRecordsWithType: self.cloudKitRecordType predicate: predicate sortDescriptor: descriptors cloudKeys: cloudKeys completionHandler: completionHandler];
+    [self fetchPublicRecordsWithType: self.cloudKitRecordType predicate: predicate sortDescriptor: descriptors cloudKeys: cloudKeys perRecordBlock: recordBlock completionHandler: completionHandler];
 }
 
-- (void)fetchPublicRecordsWithType:(NSString *)recordType predicate: (NSPredicate*)predicate sortDescriptor: (NSArray*) descriptors cloudKeys: (NSArray*)cloudKeys completionHandler:(void (^)(NSArray *records, NSError* error))completionHandler
+- (void)fetchPublicRecordsWithType:(NSString *)recordType predicate: (NSPredicate*)predicate sortDescriptor: (NSArray*) descriptors cloudKeys: (NSArray*)cloudKeys perRecordBlock:(void (^)(CKRecord *record))recordBlock completionHandler:(void (^)(NSArray *records, NSError* error))completionHandler
 {
     if (!predicate) {
         predicate = [NSPredicate predicateWithValue: YES];
@@ -242,14 +242,19 @@
     CKQueryOperation *queryOperation = [[CKQueryOperation alloc] initWithQuery:query];
     // Just request the name field for all records
     queryOperation.desiredKeys = cloudKeys;
+//    queryOperation.resultsLimit = 4;
     
     NSMutableArray *results = [[NSMutableArray alloc] init];
     
     queryOperation.recordFetchedBlock = ^(CKRecord *record) {
         [results addObject:record];
+        recordBlock(record);
     };
-    
+#pragma message "TODO: handle CKQueryCursor for when there are lots of records. Where to add logic?"
     queryOperation.queryCompletionBlock = ^(CKQueryCursor *cursor, NSError *error) {
+        
+        if (cursor) NSLog(@"FractalScapes optimizer unused query cursor returned: %@", cursor);
+        
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 completionHandler(results, error);
             });

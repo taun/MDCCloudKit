@@ -11,38 +11,88 @@
 
 @interface MDCKBaseCloudBrowserViewController ()
 
+@property(nonatomic,readwrite,strong) NSMutableArray                         *publicCloudRecords;
+@property(nonatomic,strong) NSMutableDictionary                              *publicRecordsCacheByRecordIDName;
+
 @end
 
 @implementation MDCKBaseCloudBrowserViewController
 
+-(NSMutableArray *)publicCloudRecords
+{
+    if (!_publicCloudRecords)
+    {
+        _publicCloudRecords = [NSMutableArray arrayWithCapacity: 10];
+    }
+    return _publicCloudRecords;
+}
+
+-(NSMutableDictionary *)publicRecordsCacheByRecordIDName
+{
+    if (!_publicRecordsCacheByRecordIDName)
+    {
+        _publicRecordsCacheByRecordIDName = [NSMutableDictionary dictionaryWithCapacity: 10];
+    }
+    
+    return _publicRecordsCacheByRecordIDName;
+}
 
 -(void) fetchCloudRecordsWithPredicate: (NSPredicate*)predicate andSortDescriptors: (NSArray*)descriptors
 {
     self.getSelectedButton.enabled = NO;
+    NSDate* fetchStartDate = [NSDate date];
     
-    [self.appModel.cloudKitManager fetchPublicRecordsWithPredicate: predicate sortDescriptor: descriptors cloudKeys: self.cloudDownloadKeys completionHandler:^(NSArray *records, NSError* error)
+    [self.appModel.cloudKitManager fetchPublicRecordsWithPredicate: predicate sortDescriptors: descriptors cloudKeys: self.cloudDownloadKeys perRecordBlock:^(CKRecord *record) {
+        //
+        if (record)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                // would this ever get called if there was not a valid record?
+                self.networkConnected = YES;
+                
+                NSUInteger recordSection = 0;
+                NSUInteger recordCount = self.publicCloudRecords.count;
+                NSIndexPath* newIndexPath = [NSIndexPath indexPathForItem: recordCount inSection: recordSection];
+                
+                if (recordCount == 0)
+                { // special case first record
+                    [self.publicCloudRecords addObject: record];
+                    self.publicRecordsCacheByRecordIDName[record.recordID.recordName] = newIndexPath;
+                    
+                    [self.collectionView insertSections: [NSIndexSet indexSetWithIndex: recordSection]];
+                    // will automatically load existing record for section
+                }
+                else
+                {  // we already have some records so is this a duplicate?
+                    NSIndexPath* recordIndexPath = self.publicRecordsCacheByRecordIDName[record.recordID.recordName];
+                    
+                    if (!recordIndexPath)
+                    {   // new record needs to be added and inserted
+                        [self.publicCloudRecords addObject: record];
+                        self.publicRecordsCacheByRecordIDName[record.recordID.recordName] = newIndexPath;
+                        
+                        [self.collectionView insertItemsAtIndexPaths: @[newIndexPath]];
+                    }
+                    else
+                    {   // already exists, need to update
+                        [self.collectionView reloadItemsAtIndexPaths: @[recordIndexPath]];
+                    }
+                }
+                
+            });
+            
+        }
+    } completionHandler:^(NSArray *records, NSError* error)
      {
          [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible: NO];
          [self.activityIndicator stopAnimating];
          
          if (!error)
          {
-             self.publicCloudRecords = records;
-             self.networkConnected = YES;
-             
-             if (self.collectionView.numberOfSections >= 1)
-             {
-                 [self.collectionView reloadSections: [NSIndexSet indexSetWithIndex: 0]];
-             } else
-             {
-                 [self.collectionView reloadData];
-             }
-             
              if (self.publicCloudRecords.count > 0)
              {
                  self.searchButton.enabled = YES;
              }
-             
          }
          else
          {
@@ -106,6 +156,8 @@
                  //
              }];
          }
+         NSTimeInterval fetchInterval = [fetchStartDate timeIntervalSinceNow];
+         NSLog(@"FractalScapes optimizer cloud fetch time interval: %f", fetchInterval);
      }];
 }
 

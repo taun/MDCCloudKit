@@ -20,8 +20,8 @@
                                                                     UISearchBarDelegate>
 
 @property (nonatomic,strong) id<MDCKCloudManagerAppModelProtocol>           appModel;
-@property(nonatomic,strong) NSArray                                         *publicCloudRecords;
-@property(nonatomic,strong)NSArray                                          *cloudDownloadKeys;
+@property(nonatomic,readonly,strong) NSMutableArray                         *publicCloudRecords;
+@property(nonatomic,strong) NSArray                                         *cloudDownloadKeys;
 @property(nonatomic,assign,getter=isNetworkConnected) BOOL                  networkConnected;
 @property(nonatomic,strong) UISearchController                              *searchController;
 

@@ -6,6 +6,11 @@
 @import Foundation;
 @import CloudKit;
 
+/*!
+ Local interface to the CloudKit api
+ 
+ Mostly copied from Apple sample but not liked.
+ */
 @interface MDLCloudKitManager : NSObject
 
 @property(nonatomic,strong)NSArray      *defaultSortDescriptors;
@@ -27,8 +32,31 @@
 - (void)deletePublicRecord:(CKRecord *)record;
 - (void)deletePublicRecords:(NSArray *)records withCompletionHandler:(void (^)(NSError *error))completionHandler;
 
-- (void)fetchPublicRecordsWithPredicate: (NSPredicate*)predicate sortDescriptor: (NSArray*) descriptors cloudKeys: (NSArray*)cloudKeys completionHandler:(void (^)(NSArray *records, NSError* error))completionHandler;
-- (void)fetchPublicRecordsWithType:(NSString *)recordType predicate: (NSPredicate*)predicate sortDescriptors: (NSArray*) descriptors cloudKeys: (NSArray*)cloudKeys completionHandler:(void (^)(NSArray *records, NSError* error))completionHandler;
+/*!
+ Convenience method for fetchPublicRecordsWithType: which substitutes the initialized recordType for type.
+ 
+ @param predicate         query predicate
+ @param descriptors       sort descriptors
+ @param cloudKeys         cloudKeys for properties to fetch
+ @param completionHandler what to do with the results
+ */
+- (void)fetchPublicRecordsWithPredicate: (NSPredicate*)predicate sortDescriptors: (NSArray*) descriptors cloudKeys: (NSArray*)cloudKeys perRecordBlock:(void (^)(CKRecord *record))recordBlock completionHandler:(void (^)(NSArray *records, NSError* error))completionHandler;
+/*!
+ Query to run on the CloudKit app public container.
+ 
+ @param recordType        CloudKit record type
+ @param predicate         query predicate
+ @param descriptors       sort descriptors
+ @param cloudKeys         cloudKeys for properties to fetch
+ @param completionHandler what to do with the results
+ */
+- (void)fetchPublicRecordsWithType:(NSString *)recordType predicate: (NSPredicate*)predicate sortDescriptors: (NSArray*) descriptors cloudKeys: (NSArray*)cloudKeys perRecordBlock:(void (^)(CKRecord *record))recordBlock completionHandler:(void (^)(NSArray *records, NSError* error))completionHandler;
+/*!
+ Convenience method for fetching the record references
+ 
+ @param referenceRecordName item referenced
+ @param completionHandler   what to do with it
+ */
 - (void)queryForPublicRecordsWithReferenceNamed:(NSString *)referenceRecordName completionHandler:(void (^)(NSArray *records))completionHandler;
 
 @property (nonatomic, readonly, getter=isSubscribed) BOOL subscribed;
