@@ -260,7 +260,16 @@
             });
     };
     
-    [self.publicDatabase addOperation:queryOperation];
+    self.currentOperation = queryOperation;
+    [self.publicDatabase addOperation: queryOperation];
+}
+
+-(void)cancelCurrentOperation
+{
+    if (self.currentOperation && (self.currentOperation.isReady || self.currentOperation.isExecuting))
+    {
+        [self.currentOperation cancel];
+    }
 }
 
 - (void)queryForPublicRecordsWithReferenceNamed:(NSString *)referenceRecordName completionHandler:(void (^)(NSArray *records))completionHandler {

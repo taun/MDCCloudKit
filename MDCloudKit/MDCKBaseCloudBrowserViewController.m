@@ -14,6 +14,8 @@
 @property(nonatomic,readwrite,strong) NSMutableArray                         *publicCloudRecords;
 @property(nonatomic,strong) NSMutableDictionary                              *publicRecordsCacheByRecordIDName;
 
+@property(nonatomic,strong) NSTimer                     *networkTimer;
+
 @end
 
 @implementation MDCKBaseCloudBrowserViewController
@@ -41,6 +43,8 @@
 {
     self.getSelectedButton.enabled = NO;
     NSDate* fetchStartDate = [NSDate date];
+    [self startNetworkTimer];
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible: YES];
     
     [self.appModel.cloudKitManager fetchPublicRecordsWithPredicate: predicate sortDescriptors: descriptors cloudKeys: self.cloudDownloadKeys perRecordBlock:^(CKRecord *record) {
         //
@@ -85,7 +89,6 @@
     } completionHandler:^(NSArray *records, NSError* error)
      {
          [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible: NO];
-         [self.activityIndicator stopAnimating];
          
          if (!error)
          {
@@ -93,72 +96,118 @@
              {
                  self.searchButton.enabled = YES;
              }
+             [self handleFetchRequestSuccess];
          }
          else
          {
-             self.networkConnected = NO;
-             NSString *title;
-             NSString *message;
-             NSLog(@"%@ %@",NSStringFromSelector(_cmd),[error.userInfo debugDescription]);
-             CKErrorCode code = error.code;
-             
-             switch (code) {
-                 case CKErrorInternalError:
-                     title = NSLocalizedString(@"Network problem", nil);
-                     message = @"Please try again in couple of minutes";
-                     break;
-                     
-                 case CKErrorPartialFailure:
-                     title = NSLocalizedString(@"Network problem", nil);
-                     message = @"Please try again in couple of minutes";
-                     break;
-                     
-                 case CKErrorNetworkUnavailable:
-                     title = NSLocalizedString(@"No Network", nil);
-                     message = @"Please try again when connected to a network";
-                     break;
-                     
-                 case CKErrorNetworkFailure:
-                     title = NSLocalizedString(@"Network problem", nil);
-                     message = @"Please try again in couple of minutes";
-                     break;
-                     
-                 case CKErrorServiceUnavailable:
-                     title = NSLocalizedString(@"Cloud Unavailable", nil);
-                     message = @"iCloud is temporarily unavailable. Please try again in couple of minutes";
-                     break;
-                     
-                 case CKErrorRequestRateLimited:
-                     title = NSLocalizedString(@"Cloud Unavailable", nil);
-                     message = [NSString stringWithFormat: @"iCloud is temporarily unavailable. Please try again in %@ seconds",error.userInfo[@"CKRetryAfter"]];
-                     break;
-                     
-                 case CKErrorZoneBusy:
-                     title = NSLocalizedString(@"Too Much Traffic", nil);
-                     message = @"Please try again in couple of minutes";
-                     break;
-                     
-                 default:
-                     title = NSLocalizedString(@"Problem with the Cloud", nil);
-                     message = @"Please try again later.";
-                     break;
-             }
-             
-             NSString *okActionTitle = NSLocalizedString(@"OK", nil);
-             
-             UIAlertController* alert = [UIAlertController alertControllerWithTitle: title
-                                                                            message: message
-                                                                     preferredStyle: UIAlertControllerStyleAlert];
-             
-             [alert addAction:[UIAlertAction actionWithTitle: okActionTitle style: UIAlertActionStyleCancel handler:nil]];
-             
-             [self presentViewController: alert animated: YES completion:^{
-                 //
-             }];
+             [self handleFetchRequestError: error];
          }
+
+         [self stopNetworkTimer];
          NSTimeInterval fetchInterval = [fetchStartDate timeIntervalSinceNow];
          NSLog(@"FractalScapes optimizer cloud fetch time interval: %f", fetchInterval);
      }];
+}
+
+-(void) handleFetchRequestSuccess
+{
+    
+}
+
+-(void) handleFetchRequestError: (NSError*)error
+{
+    self.networkConnected = NO;
+    BOOL giveRetryOption = NO;
+    
+    NSString *title;
+    NSString *message;
+    NSLog(@"%@ error code: %ld, %@",NSStringFromSelector(_cmd),(long)error.code,[error.userInfo debugDescription]);
+    CKErrorCode code = error.code;
+    
+    switch (code) {
+        case CKErrorInternalError: // 1
+            title = NSLocalizedString(@"Network problem", nil);
+            message = @"Please try again in couple of minutes";
+            break;
+            
+        case CKErrorPartialFailure: // 2
+            title = NSLocalizedString(@"Network problem", nil);
+            message = @"Please try again in couple of minutes";
+            break;
+            
+        case CKErrorNetworkUnavailable: // 3
+            title = NSLocalizedString(@"No Network", nil);
+            message = @"Please try again when connected to a network";
+            break;
+            
+        case CKErrorNetworkFailure: // 4
+            title = NSLocalizedString(@"Network problem", nil);
+            message = @"Please try again in couple of minutes";
+            break;
+            
+        case CKErrorServiceUnavailable: // 6
+            title = NSLocalizedString(@"Cloud Unavailable", nil);
+            message = @"iCloud is temporarily unavailable. Please try again in couple of minutes";
+            break;
+            
+        case CKErrorRequestRateLimited: // 7
+            title = NSLocalizedString(@"Cloud Unavailable", nil);
+            message = [NSString stringWithFormat: @"iCloud is temporarily unavailable. Please try again in %@ seconds",error.userInfo[@"CKRetryAfter"]];
+            break;
+            
+        case CKErrorZoneBusy: // 23
+            title = NSLocalizedString(@"Too Much Traffic", nil);
+            message = @"Please try again in couple of minutes";
+            break;
+            
+        case CKErrorOperationCancelled: // 20
+            title = NSLocalizedString(@"Cloud Timeout", nil);
+            message = @"Try again later";
+            giveRetryOption = YES;
+            break;
+            
+        case CKErrorQuotaExceeded: // 25
+            title = NSLocalizedString(@"Cloud quota reached", nil);
+            message = @"Free some cloud space";
+            break;
+            
+        default:
+            title = NSLocalizedString(@"Problem with the Cloud", nil);
+            message = @"Try again later.";
+            break;
+    }
+    
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle: title
+                                                                   message: message
+                                                            preferredStyle: UIAlertControllerStyleAlert];
+    
+    UIAlertController* __weak weakAlert = alert;
+    
+    if (giveRetryOption)
+    {
+        NSString* actionTitle = NSLocalizedString(@"Retry Now", @"Try the action again now");
+        UIAlertAction* retryAction = [UIAlertAction actionWithTitle: actionTitle style: UIAlertActionStyleDefault handler:^(UIAlertAction * action)
+                                      {
+                                          [weakAlert dismissViewControllerAnimated:YES completion:nil];
+                                          [self updateSearchResultsForSearchController: self.searchController];
+                                      }];
+        
+        [alert addAction: retryAction];
+    }
+
+    NSString *okActionTitle = NSLocalizedString(@"Ok", nil);
+    
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle: okActionTitle style: UIAlertActionStyleCancel handler:^(UIAlertAction * action)
+                                    {
+                                        [weakAlert dismissViewControllerAnimated:YES completion:nil];
+                                    }];
+    
+    [alert addAction: defaultAction];
+    
+#pragma message "TODO how to include additional options from subclass?"
+    [self.navigationController presentViewController: weakAlert animated: YES completion:^{
+        //
+    }];
 }
 
 -(void)setupSearchController
@@ -183,6 +232,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    _networkTimeoutInterval = 8.0;
+
     [self setupSearchController];
 }
 
@@ -196,6 +247,35 @@
 -(void) viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+}
+
+-(void)startNetworkTimer
+{
+    [self.activityIndicator startAnimating];
+    self.networkTimer = [NSTimer timerWithTimeInterval: self.networkTimeoutInterval
+                                                target: self
+                                              selector: @selector(networkTimeoutTriggeredBy:)
+                                              userInfo: nil
+                                               repeats: NO];
+    
+    [[NSRunLoop mainRunLoop] addTimer: self.networkTimer forMode: NSDefaultRunLoopMode];
+}
+
+-(void)stopNetworkTimer
+{
+    [self.activityIndicator stopAnimating];
+    if (self.networkTimer.isValid)
+    {
+        [self.networkTimer invalidate];
+    }
+}
+
+-(void)networkTimeoutTriggeredBy: (NSTimer*)timer
+{
+    NSLog(@"FractalScapes cloud fetch timeout: %f", self.networkTimeoutInterval);
+    [self.appModel.cloudKitManager cancelCurrentOperation];
+    [self.activityIndicator stopAnimating];
+//    [self showAlertActionsNetworkTimeout: self];
 }
 
 -(void)showAlertActionsToAddiCloud: (id)sender

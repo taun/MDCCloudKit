@@ -15,8 +15,11 @@
 
 @property(nonatomic,strong)NSArray      *defaultSortDescriptors;
 @property(nonatomic,strong)NSString     *cloudSubscriptionIDKey;
+@property(nonatomic,weak)CKOperation    *currentOperation;
 
 -(instancetype)initWithIdentifier: (NSString*)containerIdentifier andRecordType: (NSString*)cloudKitRecordType;
+
+-(void)cancelCurrentOperation;
 
 #pragma mark - CloudKit
 - (void)requestDiscoverabilityPermission:(void (^)(BOOL discoverable))completionHandler;

@@ -25,6 +25,8 @@
 @property(nonatomic,assign,getter=isNetworkConnected) BOOL                  networkConnected;
 @property(nonatomic,strong) UISearchController                              *searchController;
 
+@property(nonatomic,assign) NSTimeInterval                                  networkTimeoutInterval;
+
 @property (weak, nonatomic) IBOutlet UICollectionView                       *collectionView;
 
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView                *activityIndicator;
@@ -35,6 +37,8 @@
 
 -(void)setupSearchController;
 -(void) fetchCloudRecordsWithPredicate: (NSPredicate*)predicate andSortDescriptors: (NSArray*)descriptors;
+-(void) handleFetchRequestSuccess;
+-(void) handleFetchRequestError: (NSError*)error;
 
 - (IBAction)downloadSelected:(id)sender;
 - (IBAction)activateSearch:(id)sender;
