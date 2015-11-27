@@ -9,12 +9,14 @@
 #import "MDCKBaseCloudBrowserViewController.h"
 #import "MDLCloudKitManager.h"
 
+#import <Crashlytics/Crashlytics.h>
+
 @interface MDCKBaseCloudBrowserViewController ()
 
 @property(nonatomic,readwrite,strong) NSMutableArray                         *publicCloudRecords;
 @property(nonatomic,strong) NSMutableDictionary                              *publicRecordsCacheByRecordIDName;
 
-@property(nonatomic,strong) NSTimer                     *networkTimer;
+@property(nonatomic,strong) NSTimer                                          *networkTimer;
 
 @end
 
@@ -39,11 +41,11 @@
     return _publicRecordsCacheByRecordIDName;
 }
 
--(void) fetchCloudRecordsWithPredicate: (NSPredicate*)predicate andSortDescriptors: (NSArray*)descriptors
+-(void) fetchCloudRecordsWithPredicate: (NSPredicate*)predicate sortDescriptors: (NSArray*)descriptors timeout:(NSTimeInterval)timeout
 {
     self.getSelectedButton.enabled = NO;
     NSDate* fetchStartDate = [NSDate date];
-    [self startNetworkTimer];
+    [self startNetworkTimerWithInterval: timeout];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible: YES];
     
     [self.appModel.cloudKitManager fetchPublicRecordsWithPredicate: predicate sortDescriptors: descriptors cloudKeys: self.cloudDownloadKeys perRecordBlock:^(CKRecord *record) {
@@ -105,7 +107,7 @@
 
          [self stopNetworkTimer];
          NSTimeInterval fetchInterval = [fetchStartDate timeIntervalSinceNow];
-         NSLog(@"FractalScapes optimizer cloud fetch time interval: %f", fetchInterval);
+         [Answers logCustomEventWithName: NSStringFromClass([self class]) customAttributes: @{@"Successful fetch interval": @(fetchInterval)}];
      }];
 }
 
@@ -177,6 +179,8 @@
             break;
     }
     
+    [Answers logCustomEventWithName: NSStringFromClass([self class]) customAttributes: @{@"Fetch error": @(error.code)}];
+
     UIAlertController* alert = [UIAlertController alertControllerWithTitle: title
                                                                    message: message
                                                             preferredStyle: UIAlertControllerStyleAlert];
@@ -232,8 +236,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    _networkTimeoutInterval = 8.0;
-
     [self setupSearchController];
 }
 
@@ -249,10 +251,10 @@
     [super viewDidAppear:animated];
 }
 
--(void)startNetworkTimer
+-(void)startNetworkTimerWithInterval: (NSTimeInterval)timeout
 {
     [self.activityIndicator startAnimating];
-    self.networkTimer = [NSTimer timerWithTimeInterval: self.networkTimeoutInterval
+    self.networkTimer = [NSTimer timerWithTimeInterval: timeout
                                                 target: self
                                               selector: @selector(networkTimeoutTriggeredBy:)
                                               userInfo: nil
@@ -272,7 +274,7 @@
 
 -(void)networkTimeoutTriggeredBy: (NSTimer*)timer
 {
-    NSLog(@"FractalScapes cloud fetch timeout: %f", self.networkTimeoutInterval);
+    [Answers logCustomEventWithName: NSStringFromClass([self class]) customAttributes: @{@"Network Timeout": @YES}];
     [self.appModel.cloudKitManager cancelCurrentOperation];
     [self.activityIndicator stopAnimating];
 //    [self showAlertActionsNetworkTimeout: self];
@@ -294,6 +296,7 @@
     UIAlertAction* fractalCloud = [UIAlertAction actionWithTitle:@"Go to iCloud Settings" style:UIAlertActionStyleDefault
                                                          handler:^(UIAlertAction * action)
                                    {
+                                       [Answers logCustomEventWithName: NSStringFromClass([self class]) customAttributes: @{@"Share action": @"iCloud Settings"}];
                                        [weakAlert dismissViewControllerAnimated:YES completion:nil]; // because of popover mode
                                        [self sendUserToSystemiCloudSettings: sender];
                                    }];
@@ -302,6 +305,7 @@
     UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Later Maybe" style:UIAlertActionStyleCancel
                                                           handler:^(UIAlertAction * action)
                                     {
+                                        [Answers logCustomEventWithName: NSStringFromClass([self class]) customAttributes: @{@"Share action": @"Later"}];
                                         [weakAlert dismissViewControllerAnimated:YES completion:nil]; // because of popover mode
                                     }];
     [alert addAction: defaultAction];
