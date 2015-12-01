@@ -70,9 +70,20 @@
         {
             if (field.isReference)
             {
-                [self.cloudKitManager fetchPublicRecordsWithType: field.referenceRecordType predicate: nil sortDescriptors: nil cloudKeys: @[field.referenceRecordKey] completionHandler:^(NSArray *records, NSError *error) {
-                    field.potentialReferenceRecordsArray = records;
-                }];
+                NSMutableArray* fetchedRecords = [NSMutableArray new];
+                
+                [self.cloudKitManager fetchPublicRecordsWithType: field.referenceRecordType
+                                                       predicate: nil
+                                                 sortDescriptors: nil
+                                                       cloudKeys: @[field.referenceRecordKey]
+                                                  perRecordBlock:^(CKRecord *record) {
+                                                      [fetchedRecords addObject: record];
+                                                  }
+                                               completionHandler:^(NSArray *records, NSError *error) {
+                                                   //
+                                               }];
+                
+                field.potentialReferenceRecordsArray = fetchedRecords;
             }
         }
     }
@@ -372,14 +383,32 @@
                 [cloudKeys addObject: fieldDef.fieldKeyString];
             }
             
-            [self.cloudKitManager fetchPublicRecordsWithType: categoryDefinition.typeString predicate: nil sortDescriptors: nil cloudKeys: cloudKeys completionHandler:^(NSArray *records, NSError *error) {
-                //
-                [self compareExportRecordsOfType: categoryDefinition.typeString toExistingRecords: records];
-            }];
+#pragma message "Remove most of following code? Why fetch before saving but do nothing with fetched records?"
+            
+            NSMutableArray* fetchedRecords = [NSMutableArray new];
+            
+            [self.cloudKitManager fetchPublicRecordsWithType: categoryDefinition.typeString
+                                                   predicate: nil
+                                             sortDescriptors: nil
+                                                   cloudKeys: cloudKeys
+                                              perRecordBlock:^(CKRecord *record) {
+                                                  [fetchedRecords addObject: record];
+                                              }
+                                           completionHandler:^(NSArray *records, NSError *error) {
+                                               //
+                                           }];
+            
+            [self compareExportRecordsOfType: categoryDefinition.typeString toExistingRecords: fetchedRecords];
         }
     }
 }
 
+/*!
+ Saves records in property recordsToExport
+ 
+ @param recordType     not used!
+ @param currentRecords not used!
+ */
 -(void)compareExportRecordsOfType: (NSString*)recordType toExistingRecords: (NSArray*)currentRecords
 {
 //    NSMutableArray* recordsToAdd = [NSMutableArray new];

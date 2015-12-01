@@ -9,7 +9,6 @@
 #import "MDCKBaseCloudBrowserViewController.h"
 #import "MDLCloudKitManager.h"
 
-#import <MDCloudKit/MDLCloudKitManager.h>
 #import <Crashlytics/Crashlytics.h>
 
 @interface MDCKBaseCloudBrowserViewController ()

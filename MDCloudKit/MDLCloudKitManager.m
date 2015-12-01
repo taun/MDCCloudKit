@@ -225,6 +225,8 @@
     [self fetchPublicRecordsWithType: self.cloudKitRecordType predicate: predicate sortDescriptors: descriptors cloudKeys: cloudKeys perRecordBlock: recordBlock completionHandler: completionHandler];
 }
 
+/*     queryOperation.desiredKeys = @[CommonNameField,SciNameField,WikiField,PhotoAssetField]; */
+
 - (void)fetchPublicRecordsWithType:(NSString *)recordType predicate: (NSPredicate*)predicate sortDescriptors: (NSArray*) descriptors cloudKeys: (NSArray*)cloudKeys perRecordBlock:(void (^)(CKRecord *record))recordBlock completionHandler:(void (^)(NSArray *records, NSError* error))completionHandler
 {
     if (!predicate) {

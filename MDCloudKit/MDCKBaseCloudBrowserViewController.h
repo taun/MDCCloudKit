@@ -3,7 +3,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <MDCloudKit/MDCKCloudManagerAppModelProtocol.H>
+#import "MDCKCloudManagerAppModelProtocol.H"
 
 /*!
  Base class for searching CloudKit app public container.
