@@ -9,6 +9,7 @@
 #import "MDCKBaseCloudBrowserViewController.h"
 #import "MDLCloudKitManager.h"
 
+#import <MDCloudKit/MDLCloudKitManager.h>
 #import <Crashlytics/Crashlytics.h>
 
 @interface MDCKBaseCloudBrowserViewController ()
@@ -233,6 +234,7 @@
     _searchController.delegate = self;
 }
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -314,7 +316,7 @@
     ppc.barButtonItem = sender;
     ppc.permittedArrowDirections = UIPopoverArrowDirectionAny;
     
-    [self presentViewController:alert animated:YES completion:nil];
+    [self.navigationController presentViewController:alert animated:YES completion:nil];
 }
 
 -(void)sendUserToSystemiCloudSettings: (id)sender
@@ -372,6 +374,7 @@
 -(void)presentSearchController:(UISearchController *)searchController
 {
 }
+
 -(void)didPresentSearchController:(UISearchController *)searchController
 {
     //    searchController.searchBar.showsCancelButton = NO;
@@ -401,6 +404,9 @@
 {
 }
 
+-(void)getDefaultSearchResults
+{
+}
 
 #pragma mark - FlowLayoutDelegate
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section

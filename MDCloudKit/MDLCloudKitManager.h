@@ -2,7 +2,6 @@
 //  Copyright (c) 2014 MOEDAE LLC. All rights reserved.
 //
 
-@import UIKit;
 @import Foundation;
 @import CloudKit;
 
@@ -13,9 +12,10 @@
  */
 @interface MDLCloudKitManager : NSObject
 
-@property(nonatomic,strong)NSArray      *defaultSortDescriptors;
-@property(nonatomic,strong)NSString     *cloudSubscriptionIDKey;
-@property(nonatomic,weak)CKOperation    *currentOperation;
+@property(nonatomic,strong)NSArray                              *defaultSortDescriptors;
+@property(nonatomic,strong)NSString                             *cloudSubscriptionIDKey;
+@property(nonatomic,weak)CKOperation                            *currentOperation;
+@property (nonatomic, readonly, getter=isCloudAvailable) BOOL   cloudAvailable;
 
 -(instancetype)initWithIdentifier: (NSString*)containerIdentifier andRecordType: (NSString*)cloudKitRecordType;
 

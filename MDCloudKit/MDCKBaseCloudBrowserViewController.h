@@ -3,7 +3,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "MDCKCloudManagerAppModelProtocol.H"
+#import <MDCloudKit/MDCKCloudManagerAppModelProtocol.H>
 
 /*!
  Base class for searching CloudKit app public container.
@@ -66,7 +66,7 @@
 /*!
  Setup the search bar controller
  */
--(void)setupSearchController;
+-(void)updateCollectionViewOffsetForNavAndSearch;
 /*!
  Fetch the cloud records
  

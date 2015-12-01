@@ -3,6 +3,8 @@
 //
 
 @import CloudKit;
+@import QuartzCore;
+
 
 #import "MDLCloudKitManager.h"
 
@@ -36,7 +38,11 @@
     return self;
 }
 
-#pragma mark - sample cloud
+- (BOOL)isCloudAvailable {
+    return [[NSFileManager defaultManager] ubiquityIdentityToken] != nil;
+}
+
+#pragma mark - cloud user info
 
 - (void)requestDiscoverabilityPermission:(void (^)(BOOL discoverable)) completionHandler {
     
@@ -81,7 +87,7 @@
 
 - (void)fetchRecordWithID:(NSString *)recordID completionHandler:(void (^)(CKRecord *record))completionHandler {
     
-    CKRecordID *current = [[CKRecordID alloc] initWithRecordName:recordID];
+    CKRecordID *current = [[CKRecordID alloc] initWithRecordName: recordID];
     [self.publicDatabase fetchRecordWithID:current completionHandler:^(CKRecord *record, NSError *error) {
         
         if (error) {
@@ -216,10 +222,10 @@
 
 -(void)fetchPublicRecordsWithPredicate:(NSPredicate *)predicate sortDescriptors:(NSArray *)descriptors cloudKeys:(NSArray *)cloudKeys perRecordBlock:(void (^)(CKRecord *record))recordBlock completionHandler:(void (^)(NSArray *, NSError *))completionHandler
 {
-    [self fetchPublicRecordsWithType: self.cloudKitRecordType predicate: predicate sortDescriptor: descriptors cloudKeys: cloudKeys perRecordBlock: recordBlock completionHandler: completionHandler];
+    [self fetchPublicRecordsWithType: self.cloudKitRecordType predicate: predicate sortDescriptors: descriptors cloudKeys: cloudKeys perRecordBlock: recordBlock completionHandler: completionHandler];
 }
 
-- (void)fetchPublicRecordsWithType:(NSString *)recordType predicate: (NSPredicate*)predicate sortDescriptor: (NSArray*) descriptors cloudKeys: (NSArray*)cloudKeys perRecordBlock:(void (^)(CKRecord *record))recordBlock completionHandler:(void (^)(NSArray *records, NSError* error))completionHandler
+- (void)fetchPublicRecordsWithType:(NSString *)recordType predicate: (NSPredicate*)predicate sortDescriptors: (NSArray*) descriptors cloudKeys: (NSArray*)cloudKeys perRecordBlock:(void (^)(CKRecord *record))recordBlock completionHandler:(void (^)(NSArray *records, NSError* error))completionHandler
 {
     if (!predicate) {
         predicate = [NSPredicate predicateWithValue: YES];
