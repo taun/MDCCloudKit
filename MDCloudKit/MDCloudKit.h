@@ -19,3 +19,11 @@ FOUNDATION_EXPORT const unsigned char MDCloudKitVersionString[];
 #import <MDCloudKit/MDLCloudKitManager.h>
 #import <MDCloudKit/MDCKBaseCloudBrowserViewController.h>
 #import <MDCloudKit/MDCKCloudManagerAppModelProtocol.h>
+
+#import <MDCloudKit/MDCKCSVDataObject.h>
+
+#import <MDCloudKit/MDCKCloudKitContainerRecordDefinitions.h>
+#import <MDCloudKit/MDCKRecordFieldDefinition.h>
+#import <MDCloudKit/MDCKRecordTypeDefinition.h>
+
+#import <MDCloudKit/CloudAdminCSVUploader.h>

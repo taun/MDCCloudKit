@@ -101,7 +101,7 @@
              
              [alert addAction:[UIAlertAction actionWithTitle: okActionTitle style: UIAlertActionStyleCancel handler:nil]];
              
-             [self presentViewController: alert animated: YES completion:^{
+             [self.navigationController presentViewController: alert animated: YES completion:^{
                  //
              }];
          }
@@ -178,7 +178,7 @@
     ppc.barButtonItem = sender;
     ppc.permittedArrowDirections = UIPopoverArrowDirectionAny;
     
-    [self presentViewController:alert animated:YES completion:nil];
+    [self.navigationController presentViewController:alert animated:YES completion:nil];
 }
 
 -(void)sendUserToSystemiCloudSettings: (id)sender

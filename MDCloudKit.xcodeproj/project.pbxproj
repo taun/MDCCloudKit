@@ -3,10 +3,22 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 47;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C54857FC1BFE639E005FBB46 /* MDCKCloudKitContainerRecordDefinitions.h in Headers */ = {isa = PBXBuildFile; fileRef = C54857F41BFE639E005FBB46 /* MDCKCloudKitContainerRecordDefinitions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C54857FD1BFE639E005FBB46 /* MDCKCloudKitContainerRecordDefinitions.m in Sources */ = {isa = PBXBuildFile; fileRef = C54857F51BFE639E005FBB46 /* MDCKCloudKitContainerRecordDefinitions.m */; };
+		C54857FE1BFE639E005FBB46 /* MDCKCSVDataObject.h in Headers */ = {isa = PBXBuildFile; fileRef = C54857F61BFE639E005FBB46 /* MDCKCSVDataObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C54857FF1BFE639E005FBB46 /* MDCKCSVDataObject.m in Sources */ = {isa = PBXBuildFile; fileRef = C54857F71BFE639E005FBB46 /* MDCKCSVDataObject.m */; };
+		C54858001BFE639E005FBB46 /* MDCKRecordFieldDefinition.h in Headers */ = {isa = PBXBuildFile; fileRef = C54857F81BFE639E005FBB46 /* MDCKRecordFieldDefinition.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C54858011BFE639E005FBB46 /* MDCKRecordFieldDefinition.m in Sources */ = {isa = PBXBuildFile; fileRef = C54857F91BFE639E005FBB46 /* MDCKRecordFieldDefinition.m */; };
+		C54858021BFE639E005FBB46 /* MDCKRecordTypeDefinition.h in Headers */ = {isa = PBXBuildFile; fileRef = C54857FA1BFE639E005FBB46 /* MDCKRecordTypeDefinition.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C54858031BFE639E005FBB46 /* MDCKRecordTypeDefinition.m in Sources */ = {isa = PBXBuildFile; fileRef = C54857FB1BFE639E005FBB46 /* MDCKRecordTypeDefinition.m */; };
+		C54858091BFE645B005FBB46 /* CHCSVParser.h in Headers */ = {isa = PBXBuildFile; fileRef = C54858071BFE645B005FBB46 /* CHCSVParser.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C548580A1BFE645B005FBB46 /* CHCSVParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C54858081BFE645B005FBB46 /* CHCSVParser.m */; };
+		C548580D1BFE66DC005FBB46 /* CloudAdminCSVUploader.h in Headers */ = {isa = PBXBuildFile; fileRef = C548580B1BFE66DC005FBB46 /* CloudAdminCSVUploader.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C548580E1BFE66DC005FBB46 /* CloudAdminCSVUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = C548580C1BFE66DC005FBB46 /* CloudAdminCSVUploader.m */; };
 		C550FC861B0E59FE00ECF2FC /* MDCloudKit.h in Headers */ = {isa = PBXBuildFile; fileRef = C550FC851B0E59FE00ECF2FC /* MDCloudKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C550FC8C1B0E59FE00ECF2FC /* MDCloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C550FC801B0E59FE00ECF2FC /* MDCloudKit.framework */; };
 		C550FC931B0E59FE00ECF2FC /* MDCloudKitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C550FC921B0E59FE00ECF2FC /* MDCloudKitTests.m */; };
@@ -28,6 +40,18 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C54857F41BFE639E005FBB46 /* MDCKCloudKitContainerRecordDefinitions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDCKCloudKitContainerRecordDefinitions.h; sourceTree = "<group>"; };
+		C54857F51BFE639E005FBB46 /* MDCKCloudKitContainerRecordDefinitions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDCKCloudKitContainerRecordDefinitions.m; sourceTree = "<group>"; };
+		C54857F61BFE639E005FBB46 /* MDCKCSVDataObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDCKCSVDataObject.h; sourceTree = "<group>"; };
+		C54857F71BFE639E005FBB46 /* MDCKCSVDataObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDCKCSVDataObject.m; sourceTree = "<group>"; };
+		C54857F81BFE639E005FBB46 /* MDCKRecordFieldDefinition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDCKRecordFieldDefinition.h; sourceTree = "<group>"; };
+		C54857F91BFE639E005FBB46 /* MDCKRecordFieldDefinition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDCKRecordFieldDefinition.m; sourceTree = "<group>"; };
+		C54857FA1BFE639E005FBB46 /* MDCKRecordTypeDefinition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDCKRecordTypeDefinition.h; sourceTree = "<group>"; };
+		C54857FB1BFE639E005FBB46 /* MDCKRecordTypeDefinition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDCKRecordTypeDefinition.m; sourceTree = "<group>"; };
+		C54858071BFE645B005FBB46 /* CHCSVParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CHCSVParser.h; path = CHCSVParser/CHCSVParser.h; sourceTree = "<group>"; };
+		C54858081BFE645B005FBB46 /* CHCSVParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CHCSVParser.m; path = CHCSVParser/CHCSVParser.m; sourceTree = "<group>"; };
+		C548580B1BFE66DC005FBB46 /* CloudAdminCSVUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CloudAdminCSVUploader.h; sourceTree = "<group>"; };
+		C548580C1BFE66DC005FBB46 /* CloudAdminCSVUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CloudAdminCSVUploader.m; sourceTree = "<group>"; };
 		C550FC801B0E59FE00ECF2FC /* MDCloudKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MDCloudKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C550FC841B0E59FE00ECF2FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C550FC851B0E59FE00ECF2FC /* MDCloudKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MDCloudKit.h; sourceTree = "<group>"; };
@@ -60,6 +84,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C54857F31BFE6336005FBB46 /* RecordParsingImportExport */ = {
+			isa = PBXGroup;
+			children = (
+				C548580B1BFE66DC005FBB46 /* CloudAdminCSVUploader.h */,
+				C548580C1BFE66DC005FBB46 /* CloudAdminCSVUploader.m */,
+				C54857F41BFE639E005FBB46 /* MDCKCloudKitContainerRecordDefinitions.h */,
+				C54857F51BFE639E005FBB46 /* MDCKCloudKitContainerRecordDefinitions.m */,
+				C54857F61BFE639E005FBB46 /* MDCKCSVDataObject.h */,
+				C54857F71BFE639E005FBB46 /* MDCKCSVDataObject.m */,
+				C54857F81BFE639E005FBB46 /* MDCKRecordFieldDefinition.h */,
+				C54857F91BFE639E005FBB46 /* MDCKRecordFieldDefinition.m */,
+				C54857FA1BFE639E005FBB46 /* MDCKRecordTypeDefinition.h */,
+				C54857FB1BFE639E005FBB46 /* MDCKRecordTypeDefinition.m */,
+			);
+			name = RecordParsingImportExport;
+			sourceTree = "<group>";
+		};
+		C54858041BFE63BE005FBB46 /* CHCSVParser */ = {
+			isa = PBXGroup;
+			children = (
+				C54858071BFE645B005FBB46 /* CHCSVParser.h */,
+				C54858081BFE645B005FBB46 /* CHCSVParser.m */,
+			);
+			name = CHCSVParser;
+			sourceTree = "<group>";
+		};
 		C550FC761B0E59FE00ECF2FC = {
 			isa = PBXGroup;
 			children = (
@@ -81,6 +131,8 @@
 		C550FC821B0E59FE00ECF2FC /* MDCloudKit */ = {
 			isa = PBXGroup;
 			children = (
+				C54858041BFE63BE005FBB46 /* CHCSVParser */,
+				C54857F31BFE6336005FBB46 /* RecordParsingImportExport */,
 				C550FC851B0E59FE00ECF2FC /* MDCloudKit.h */,
 				C59EC00D1B11737B0071742B /* MDLCloudKitManager.h */,
 				C59EC00E1B11737B0071742B /* MDLCloudKitManager.m */,
@@ -125,6 +177,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				C550FC861B0E59FE00ECF2FC /* MDCloudKit.h in Headers */,
+				C548580D1BFE66DC005FBB46 /* CloudAdminCSVUploader.h in Headers */,
+				C54858091BFE645B005FBB46 /* CHCSVParser.h in Headers */,
+				C54858021BFE639E005FBB46 /* MDCKRecordTypeDefinition.h in Headers */,
+				C54857FC1BFE639E005FBB46 /* MDCKCloudKitContainerRecordDefinitions.h in Headers */,
+				C54858001BFE639E005FBB46 /* MDCKRecordFieldDefinition.h in Headers */,
+				C54857FE1BFE639E005FBB46 /* MDCKCSVDataObject.h in Headers */,
 				C59EC0121B117A240071742B /* MDCKCloudManagerAppModelProtocol.h in Headers */,
 				C59EC00F1B11737B0071742B /* MDLCloudKitManager.h in Headers */,
 				C59EC0091B1170E50071742B /* MDCKBaseCloudBrowserViewController.h in Headers */,
@@ -176,7 +234,7 @@
 		C550FC771B0E59FE00ECF2FC /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0630;
+				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = "MOEDAE LLC";
 				TargetAttributes = {
 					C550FC7F1B0E59FE00ECF2FC = {
@@ -189,7 +247,7 @@
 				};
 			};
 			buildConfigurationList = C550FC7A1B0E59FE00ECF2FC /* Build configuration list for PBXProject "MDCloudKit" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 6.3";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -228,7 +286,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C548580A1BFE645B005FBB46 /* CHCSVParser.m in Sources */,
+				C54858011BFE639E005FBB46 /* MDCKRecordFieldDefinition.m in Sources */,
+				C548580E1BFE66DC005FBB46 /* CloudAdminCSVUploader.m in Sources */,
+				C54857FD1BFE639E005FBB46 /* MDCKCloudKitContainerRecordDefinitions.m in Sources */,
+				C54858031BFE639E005FBB46 /* MDCKRecordTypeDefinition.m in Sources */,
 				C59EC0101B11737B0071742B /* MDLCloudKitManager.m in Sources */,
+				C54857FF1BFE639E005FBB46 /* MDCKCSVDataObject.m in Sources */,
 				C59EC00A1B1170E50071742B /* MDCKBaseCloudBrowserViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -274,6 +338,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -351,6 +416,7 @@
 				INFOPLIST_FILE = MDCloudKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.moedae.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -367,6 +433,7 @@
 				INFOPLIST_FILE = MDCloudKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.moedae.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -385,6 +452,7 @@
 				);
 				INFOPLIST_FILE = MDCloudKitTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.moedae.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -398,6 +466,7 @@
 				);
 				INFOPLIST_FILE = MDCloudKitTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.moedae.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
