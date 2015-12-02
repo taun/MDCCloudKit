@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "E2D2F6C13A3B859E274DA8336922942DDD98A508",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "E2D2F6C13A3B859E274DA8336922942DDD98A508" : 0,
+    "622EB86CA9B4EAEEDAB1BE61C7E8F63A2781C049" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "40E5457D-9016-47C9-86DA-BC87F714D267",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "E2D2F6C13A3B859E274DA8336922942DDD98A508" : "MDCloudKit\/",
+    "622EB86CA9B4EAEEDAB1BE61C7E8F63A2781C049" : "..\/.."
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "MDCloudKit",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "MDCloudKit.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "ssh:\/\/srv.moedae.net:2609\/srv\/gitroot\/moedae\/apple\/DaisySensor.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "622EB86CA9B4EAEEDAB1BE61C7E8F63A2781C049"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "ssh:\/\/srv.moedae.net:2609\/srv\/gitroot\/moedae\/apple\/MDCloudKit.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "E2D2F6C13A3B859E274DA8336922942DDD98A508"
+    }
+  ]
+}
