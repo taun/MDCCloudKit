@@ -48,6 +48,10 @@
  */
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView                *activityIndicator;
 /*!
+ Fetch activity indicator
+ */
+@property (weak, nonatomic) IBOutlet UILabel                                *emptySearchResultLabel;
+/*!
  Search bar view container
  */
 @property (weak, nonatomic) IBOutlet UIView                                 *searchBarContainer;

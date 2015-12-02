@@ -13,7 +13,13 @@
 
 @interface MDCKBaseCloudBrowserViewController ()
 
+/*!
+ The data source of returned public CKRecords
+ */
 @property(nonatomic,readwrite,strong) NSMutableArray                         *publicCloudRecords;
+/*!
+ A mapping of the CKRecord by RecordID to it's index location in the collection.
+ */
 @property(nonatomic,strong) NSMutableDictionary                              *publicRecordsCacheByRecordIDName;
 
 @property(nonatomic,strong) NSTimer                                          *networkTimer;
@@ -45,8 +51,21 @@
 {
     self.getSelectedButton.enabled = NO;
     NSDate* fetchStartDate = [NSDate date];
-    [self startNetworkTimerWithInterval: timeout];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self startNetworkTimerWithInterval: timeout];
+    });
+    
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible: YES];
+    
+    if (self.publicCloudRecords.count > 0)
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.publicRecordsCacheByRecordIDName removeAllObjects];
+            [self.publicCloudRecords removeAllObjects];
+            [self.collectionView deleteSections: [NSIndexSet indexSetWithIndex: 0]];
+        });
+    }
     
     [self.appModel.cloudKitManager fetchPublicRecordsWithPredicate: predicate sortDescriptors: descriptors cloudKeys: self.cloudDownloadKeys perRecordBlock:^(CKRecord *record) {
         //
@@ -91,23 +110,27 @@
     } completionHandler:^(NSArray *records, NSError* error)
      {
          [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible: NO];
-         
-         if (!error)
-         {
-             if (self.publicCloudRecords.count > 0)
-             {
-                 self.searchButton.enabled = YES;
-             }
-             [self handleFetchRequestSuccess];
-         }
-         else
-         {
-             [self handleFetchRequestError: error];
-         }
+         dispatch_async(dispatch_get_main_queue(), ^{
 
-         [self stopNetworkTimer];
-         NSTimeInterval fetchInterval = [fetchStartDate timeIntervalSinceNow];
-         [Answers logCustomEventWithName: NSStringFromClass([self class]) customAttributes: @{@"Successful fetch interval": @(fetchInterval)}];
+             [self stopNetworkTimer];
+             self.emptySearchResultLabel.hidden = self.publicCloudRecords.count ? YES : NO;
+             
+             NSTimeInterval fetchInterval = [fetchStartDate timeIntervalSinceNow];
+             [Answers logCustomEventWithName: NSStringFromClass([self class]) customAttributes: @{@"Successful fetch interval": @(fetchInterval)}];
+             
+             if (!error)
+             {
+                 if (self.publicCloudRecords.count > 0)
+                 {
+                     self.searchButton.enabled = YES;
+                 }
+                 [self handleFetchRequestSuccess];
+             }
+             else
+             {
+                 [self handleFetchRequestError: error];
+             }
+         });
      }];
 }
 
@@ -209,7 +232,7 @@
     [alert addAction: defaultAction];
     
 #pragma message "TODO how to include additional options from subclass?"
-    [self.navigationController presentViewController: weakAlert animated: YES completion:^{
+    [self presentViewController: weakAlert animated: YES completion:^{
         //
     }];
 }
@@ -243,6 +266,8 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    self.emptySearchResultLabel.hidden = YES;
     
     [self updateCollectionViewOffsetForNavAndSearch];
 }
@@ -401,10 +426,7 @@
 #pragma mark - UISearchResultsUpdating
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController
 {
-}
-
--(void)getDefaultSearchResults
-{
+    [self fetchCloudRecordsWithPredicate: nil sortDescriptors: nil timeout: 20.0];
 }
 
 #pragma mark - FlowLayoutDelegate
@@ -427,7 +449,7 @@
 #pragma mark - UICollectionViewDataSource
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
-    return self.isNetworkConnected ? 1 : 0;
+    return self.publicCloudRecords.count ? 1 : 0;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section

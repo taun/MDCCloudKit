@@ -229,7 +229,8 @@
 
 - (void)fetchPublicRecordsWithType:(NSString *)recordType predicate: (NSPredicate*)predicate sortDescriptors: (NSArray*) descriptors cloudKeys: (NSArray*)cloudKeys perRecordBlock:(void (^)(CKRecord *record))recordBlock completionHandler:(void (^)(NSArray *records, NSError* error))completionHandler
 {
-    if (!predicate) {
+    if (!predicate)
+    {
         predicate = [NSPredicate predicateWithValue: YES];
     }
     
