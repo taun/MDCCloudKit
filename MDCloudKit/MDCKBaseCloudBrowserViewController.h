@@ -66,6 +66,10 @@
 /*!
  Setup the search bar controller
  */
+-(void)setupSearchController;
+/*!
+ Setup the search bar controller
+ */
 -(void)updateCollectionViewOffsetForNavAndSearch;
 /*!
  Fetch the cloud records
