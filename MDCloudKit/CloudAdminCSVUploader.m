@@ -76,10 +76,11 @@
                                                        predicate: nil
                                                  sortDescriptors: nil
                                                        cloudKeys: @[field.referenceRecordKey]
+                                                qualityOfService: NSQualityOfServiceBackground
                                                   perRecordBlock:^(CKRecord *record) {
                                                       [fetchedRecords addObject: record];
                                                   }
-                                               completionHandler:^(NSArray *records, NSError *error) {
+                                               completionHandler:^(CKQueryCursor* cursor, NSError *error) {
                                                    //
                                                }];
                 
@@ -391,10 +392,11 @@
                                                    predicate: nil
                                              sortDescriptors: nil
                                                    cloudKeys: cloudKeys
+                                            qualityOfService: NSQualityOfServiceUserInitiated
                                               perRecordBlock:^(CKRecord *record) {
                                                   [fetchedRecords addObject: record];
                                               }
-                                           completionHandler:^(NSArray *records, NSError *error) {
+                                           completionHandler:^(CKQueryCursor* cursor, NSError *error) {
                                                //
                                            }];
             
@@ -420,7 +422,7 @@
     {
 //        self.cloudKitManager.cloudKitRecordType = recordType;
         
-        [self.cloudKitManager savePublicRecords: self.recordsToExport withCompletionHandler:^(NSError *error) {
+        [self.cloudKitManager savePublicRecords: self.recordsToExport qualityOfService: NSQualityOfServiceUserInitiated withCompletionHandler:^(NSError *error) {
             NSLog(@"Saved Records: %@; Error:%@", self.recordsToExport, error);
         }];
     }

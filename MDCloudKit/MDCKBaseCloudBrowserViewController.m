@@ -61,19 +61,22 @@
     if (self.publicCloudRecords.count > 0)
     {
         dispatch_async(dispatch_get_main_queue(), ^{
+            NSUInteger sections = [self.collectionView numberOfSections];
             [self.publicRecordsCacheByRecordIDName removeAllObjects];
             [self.publicCloudRecords removeAllObjects];
-            [self.collectionView deleteSections: [NSIndexSet indexSetWithIndex: 0]];
+            if (sections > 0) [self.collectionView deleteSections: [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0, sections)]];
         });
     }
     
-    [self.appModel.cloudKitManager fetchPublicRecordsWithPredicate: predicate sortDescriptors: descriptors cloudKeys: self.cloudDownloadKeys perRecordBlock:^(CKRecord *record) {
+    self.currentSearchOperation = [self.appModel.cloudKitManager fetchPublicRecordsWithPredicate: predicate sortDescriptors: descriptors cloudKeys: self.cloudDownloadKeys qualityOfService: NSQualityOfServiceUserInteractive resultLimit: 1 perRecordBlock:^(CKRecord *record) {
         //
         if (record)
         {
             dispatch_async(dispatch_get_main_queue(), ^{
                 // would this ever get called if there was not a valid record?
                 self.networkConnected = YES;
+                self.emptySearchResultLabel.hidden = YES;
+                self.searchButton.enabled = YES;
                 
                 NSUInteger recordSection = 0;
                 NSUInteger recordCount = self.publicCloudRecords.count;
@@ -107,28 +110,36 @@
             });
             
         }
-    } completionHandler:^(NSArray *records, NSError* error)
+    } completionHandler:^(CKQueryCursor *cursor, NSError* error)
      {
          [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible: NO];
          dispatch_async(dispatch_get_main_queue(), ^{
 
              [self stopNetworkTimer];
-             self.emptySearchResultLabel.hidden = self.publicCloudRecords.count ? YES : NO;
              
              NSTimeInterval fetchInterval = [fetchStartDate timeIntervalSinceNow];
              [Answers logCustomEventWithName: NSStringFromClass([self class]) customAttributes: @{@"Successful fetch interval": @(fetchInterval)}];
              
              if (!error)
              {
-                 if (self.publicCloudRecords.count > 0)
+                 if (self.publicCloudRecords.count == 0)
                  {
-                     self.searchButton.enabled = YES;
+                     self.emptySearchResultLabel.hidden = NO;
                  }
+                 
                  [self handleFetchRequestSuccess];
+                 
+                 if (cursor)
+                 {
+                     self.currentSearchOperation = [self.appModel.cloudKitManager fetchNextRecordWithCursor: cursor];
+                 }
              }
              else
              {
-                 [self handleFetchRequestError: error];
+                 if (error.code != CKErrorOperationCancelled)
+                 {  // need to skip when the operation was cancelled due to typing
+                     [self handleFetchRequestError: error];
+                 }
              }
          });
      }];
@@ -215,7 +226,7 @@
         NSString* actionTitle = NSLocalizedString(@"Retry Now", @"Try the action again now");
         UIAlertAction* retryAction = [UIAlertAction actionWithTitle: actionTitle style: UIAlertActionStyleDefault handler:^(UIAlertAction * action)
                                       {
-                                          [weakAlert dismissViewControllerAnimated:YES completion:nil];
+//                                          [weakAlert dismissViewControllerAnimated:YES completion:nil];
                                           [self updateSearchResultsForSearchController: self.searchController];
                                       }];
         
@@ -226,7 +237,7 @@
     
     UIAlertAction* defaultAction = [UIAlertAction actionWithTitle: okActionTitle style: UIAlertActionStyleCancel handler:^(UIAlertAction * action)
                                     {
-                                        [weakAlert dismissViewControllerAnimated:YES completion:nil];
+//                                        [weakAlert dismissViewControllerAnimated:YES completion:nil];
                                     }];
     
     [alert addAction: defaultAction];
@@ -270,11 +281,19 @@
     self.emptySearchResultLabel.hidden = YES;
     
     [self updateCollectionViewOffsetForNavAndSearch];
+
+    self.searchController.delegate = self;
 }
 
 -(void) viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    self.searchController.delegate = nil;
 }
 
 -(void)startNetworkTimerWithInterval: (NSTimeInterval)timeout
@@ -301,7 +320,7 @@
 -(void)networkTimeoutTriggeredBy: (NSTimer*)timer
 {
     [Answers logCustomEventWithName: NSStringFromClass([self class]) customAttributes: @{@"Network Timeout": @YES}];
-    [self.appModel.cloudKitManager cancelCurrentOperation];
+    [self.appModel.cloudKitManager cancelOperation: self.currentSearchOperation];
     [self.activityIndicator stopAnimating];
 //    [self showAlertActionsNetworkTimeout: self];
 }
@@ -348,12 +367,6 @@
     [[UIApplication sharedApplication] openURL: [NSURL URLWithString:@"prefs:root=iCloud"]];
 }
 
-
--(void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    self.searchController.delegate = nil;
-}
 
 -(void) viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
@@ -407,21 +420,43 @@
     self.tabBarController.tabBar.hidden = YES;
 }
 
+-(void)willDismissSearchController:(UISearchController *)searchController
+{
+    
+}
+
 -(void)didDismissSearchController:(UISearchController *)searchController
 {
     [self updateCollectionViewOffsetForNavAndSearch];
     self.tabBarController.tabBar.hidden = NO;
 }
 
-- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
-{
-    self.searchController.active = NO;
-}
-
 - (IBAction)activateSearch:(id)sender
 {
     self.searchController.active = !self.searchController.active;
 }
+
+#pragma mark - UISearchBarDelegate
+-(void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope
+{
+    [self updateSearchResultsForSearchController: self.searchController];
+}
+
+-(void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
+{
+    self.textWasEdited = YES;
+}
+
+-(void)searchBarTextDidEndEditing:(UISearchBar *)searchBar
+{
+    
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
+{
+    [searchBar resignFirstResponder];
+}
+
 
 #pragma mark - UISearchResultsUpdating
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController
