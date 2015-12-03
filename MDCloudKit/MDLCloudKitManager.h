@@ -3,6 +3,7 @@
 //
 
 @import Foundation;
+@import UIKit;
 @import CloudKit;
 
 /*!
@@ -16,6 +17,7 @@
 @property(nonatomic,strong)NSString                             *cloudSubscriptionIDKey;
 @property(nonatomic,weak)CKOperation                            *currentOperation;
 @property (nonatomic, readonly, getter=isCloudAvailable) BOOL   cloudAvailable;
+@property(nonatomic,readonly) NSCache                           *resourceCache;
 
 -(instancetype)initWithIdentifier: (NSString*)containerIdentifier andRecordType: (NSString*)cloudKitRecordType;
 
@@ -27,6 +29,20 @@
 - (void)uploadAssetWithURL:(NSURL *)assetURL completionHandler:(void (^)(CKRecord *record))completionHandler;
 - (void)addRecordWithName:(NSString *)name location:(CLLocation *)location completionHandler:(void (^)(CKRecord *record))completionHandler;
 
+/*!
+ CloudKit query method using NSCache for storing retrieved images
+ 
+ @param key               image asset key
+ @param recordID          recordName of record with image asset
+ @param completionHandler block for retrieved image assignment
+ */
+- (void)fetchImageAsset: (NSString*)key forRecordWithID:(NSString *)recordID completionHandler:(void (^)(UIImage *image))completionHandler;
+/*!
+ Standard CloudKit record query
+ 
+ @param recordID          recordName
+ @param completionHandler block for retirieved record.
+ */
 - (void)fetchRecordWithID:(NSString *)recordID completionHandler:(void (^)(CKRecord *record))completionHandler;
 - (void)fetchRecordsWithIDs:(NSArray *)recordIDObjects desiredKeys: (NSArray*)keys qualityOfService: (NSQualityOfService)quality perRecordHandler: (void (^)(CKRecord *record, CKRecordID *recordID, NSError *error))perRecordHandler completionHandler:(void (^)(NSDictionary *recordsByRecordID, NSError *operationError))completionHandler;
 - (void)queryForRecordsNearLocation:(CLLocation *)location completionHandler:(void (^)(NSArray *records))completionHandler;

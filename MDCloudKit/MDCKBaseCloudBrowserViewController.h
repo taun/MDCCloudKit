@@ -34,6 +34,10 @@
  */
 @property(nonatomic,strong) NSArray                                         *cloudDownloadKeys;
 /*!
+ Cloud key for separate thumbnail download
+ */
+@property(nonatomic,strong) NSString                                        *cloudThumbnailKey;
+/*!
  Whether connected to the network
  */
 @property(nonatomic,assign,getter=isNetworkConnected) BOOL                  networkConnected;

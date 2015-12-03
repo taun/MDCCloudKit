@@ -18,6 +18,8 @@
 
 @implementation MDLCloudKitManager
 
+@synthesize resourceCache = _resourceCache;
+
 -(instancetype)initWithIdentifier:(NSString *)containerIdentifier andRecordType:(NSString *)cloudKitRecordType
 {
     self = [super init];
@@ -40,6 +42,71 @@
 
 - (BOOL)isCloudAvailable {
     return [[NSFileManager defaultManager] ubiquityIdentityToken] != nil;
+}
+
+-(NSCache *)resourceCache
+{
+    if (!_resourceCache) _resourceCache = [NSCache new];
+    return _resourceCache;
+}
+
+-(UIImage*) getCachedImageForRecordName: (NSString*)recordName
+{
+    NSPurgeableData* imageData = [self.resourceCache objectForKey: recordName];
+    
+    UIImage* image;
+    
+    if (imageData)
+    {
+        if ([imageData beginContentAccess])
+        {
+            image = [UIImage imageWithData: imageData];
+            [imageData endContentAccess];
+        }
+    }
+    
+    return image;
+}
+
+-(void) cacheImageData: (NSPurgeableData*)imageData forRecordName: (NSString*)recordName
+{
+    [self.resourceCache setObject: imageData forKey: recordName];
+}
+
+-(void)fetchImageAsset:(NSString *)key forRecordWithID:(NSString *)recordName completionHandler:(void (^)(UIImage *))completionHandler
+{
+    UIImage* cachedThumbnailImage = [self getCachedImageForRecordName: recordName];
+    
+    if (!cachedThumbnailImage)
+    {   // NOT cached so fetch from the cloud.
+        CKRecordID *recordID = [[CKRecordID alloc] initWithRecordName: recordName];
+        CKFetchRecordsOperation* fetchRecordsOp = [[CKFetchRecordsOperation alloc]initWithRecordIDs: @[recordID]];
+        fetchRecordsOp.database = self.publicDatabase;
+        
+        fetchRecordsOp.perRecordCompletionBlock = ^(CKRecord *record, CKRecordID* recordID, NSError* error) {
+     
+            CKAsset* thumbnailAsset = record[key];
+            if (thumbnailAsset)
+            {
+                NSData* thumbnailData = [NSData dataWithContentsOfURL: thumbnailAsset.fileURL];
+                [self cacheImageData: [NSPurgeableData dataWithData: thumbnailData] forRecordName: recordID.recordName];
+                UIImage* cloudThumbnailImage = [UIImage imageWithData: thumbnailData];
+                if (cloudThumbnailImage)
+                {
+                    completionHandler(cloudThumbnailImage);
+                }
+            }
+
+            };
+            
+        fetchRecordsOp.desiredKeys = @[key];
+        fetchRecordsOp.qualityOfService = NSQualityOfServiceUserInitiated;
+        [self.publicDatabase addOperation: fetchRecordsOp];
+    }
+    else
+    {   // cached,
+        completionHandler(cachedThumbnailImage);
+    }
 }
 
 #pragma mark - cloud user info
