@@ -46,8 +46,8 @@
     _fillColor = [UIColor whiteColor];
     _progressUploadColor = [UIColor greenColor];
     _progressDownloadColor = [UIColor redColor];
-
-    _progress = 0.5;
+    _direction = 0;
+    _progress = 0;
 }
 
 - (void)prepareForInterfaceBuilder
@@ -58,9 +58,22 @@
 
 -(void)setProgress:(CGFloat)progress
 {
-    _progress = -progress;
+    _progress = progress;
     
     [self setNeedsDisplay];
+}
+
+-(void)setDirection:(NSInteger)direction
+{
+    _direction = direction;
+    
+    [self setNeedsDisplay];
+}
+
+-(void)setDirection:(NSInteger)direction progress:(CGFloat)progress
+{
+    self.direction = direction;
+    self.progress = progress;
 }
 
 -(void)drawRect:(CGRect)rect
@@ -70,22 +83,47 @@
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     
-    UIColor *startColor = self.fillColor;
-    UIColor *endColor = self.progressUploadColor;
+    UIColor *startColor;
+    UIColor *endColor;
     
     CGFloat gradientCenter = ABS(self.progress/100.0);
-    CGPoint gradientStart = CGPointMake(12.5, 7.5);
-    CGPoint gradientEnd = CGPointMake(12.5, 18.5);
+    CGPoint gradientEnd = CGPointMake(12.5, 7.5);
+    CGPoint gradientStart = CGPointMake(12.5, 18.5);
     
-    if (self.progress == 0.0)
+    if (self.direction == 0)
     {
-        startColor = [self blendColor: startColor WithFraction: 0.5 ofColor: endColor];
+        startColor = self.fillColor;
+        endColor = self.fillColor;
     }
-    else if (self.progress < 0)
+    else if (self.direction > 0)
     {
-        endColor = self.progressDownloadColor;
-        gradientStart = CGPointMake(12.5, 18.5);
-        gradientEnd = CGPointMake(12.5, 7.5);
+        if (self.progress == 0)
+        {
+            startColor = self.progressUploadColor;
+            endColor = startColor;
+        }
+        else
+        {
+            startColor = self.fillColor;
+            endColor = self.progressUploadColor;
+            gradientStart = CGPointMake(12.5, 18.5);
+            gradientEnd = CGPointMake(12.5, 7.5);
+        }
+    }
+    else if (self.direction < 0)
+    {
+        if (self.progress == 0)
+        {
+            startColor = self.progressDownloadColor;
+            endColor = startColor;
+        }
+        else
+        {
+            startColor = self.fillColor;
+            endColor = self.progressDownloadColor;
+            gradientEnd = CGPointMake(12.5, 18.5);
+            gradientStart = CGPointMake(12.5, 7.5);
+        }
     }
     
     //// Gradient Declarations

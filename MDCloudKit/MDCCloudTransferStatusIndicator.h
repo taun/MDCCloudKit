@@ -21,8 +21,15 @@ IB_DESIGNABLE
 @property(nonatomic,strong) IBInspectable   UIColor     *progressDownloadColor;
 @property(nonatomic,strong) IBInspectable   UIColor     *progressUploadColor;
 /*!
+ Equivalent to isDownloading = -1, no loading = 0, isUploading = 1
+ Could have used enum but doesn't help with inspectable property.
+ */
+@property(nonatomic,assign) IBInspectable   NSInteger   direction;
+/*!
  Progress percent -100 (downloading) to 100 (uploading)
  */
 @property(nonatomic,assign)IBInspectable CGFloat        progress;
+
+-(void) setDirection:(NSInteger)direction progress: (CGFloat)progress;
 
 @end
