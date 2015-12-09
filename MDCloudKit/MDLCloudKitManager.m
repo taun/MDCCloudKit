@@ -79,17 +79,17 @@
     
     if (!cachedThumbnailImage)
     {   // NOT cached so fetch from the cloud.
-        CKRecordID *recordID = [[CKRecordID alloc] initWithRecordName: recordName];
-        CKFetchRecordsOperation* fetchRecordsOp = [[CKFetchRecordsOperation alloc]initWithRecordIDs: @[recordID]];
+        CKRecordID *recordIDToFetch = [[CKRecordID alloc] initWithRecordName: recordName];
+        CKFetchRecordsOperation* fetchRecordsOp = [[CKFetchRecordsOperation alloc]initWithRecordIDs: @[recordIDToFetch]];
         fetchRecordsOp.database = self.publicDatabase;
         
-        fetchRecordsOp.perRecordCompletionBlock = ^(CKRecord *record, CKRecordID* recordID, NSError* error) {
+        fetchRecordsOp.perRecordCompletionBlock = ^(CKRecord *record, CKRecordID* recordIDFetched, NSError* error) {
      
             CKAsset* thumbnailAsset = record[key];
             if (thumbnailAsset)
             {
                 NSData* thumbnailData = [NSData dataWithContentsOfURL: thumbnailAsset.fileURL];
-                [self cacheImageData: [NSPurgeableData dataWithData: thumbnailData] forRecordName: recordID.recordName];
+                [self cacheImageData: [NSPurgeableData dataWithData: thumbnailData] forRecordName: recordIDFetched.recordName];
                 UIImage* cloudThumbnailImage = [UIImage imageWithData: thumbnailData];
                 if (cloudThumbnailImage)
                 {

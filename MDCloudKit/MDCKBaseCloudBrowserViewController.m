@@ -7,7 +7,6 @@
 //
 
 #import "MDCKBaseCloudBrowserViewController.h"
-#import "MDLDaisyAppModel.h"
 #import "MDLCloudKitManager.h"
 
 #import <Crashlytics/Crashlytics.h>
