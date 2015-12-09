@@ -18,7 +18,11 @@ IB_DESIGNABLE
 
 @property(nonatomic,strong) IBInspectable   UIColor     *outlineColor;
 @property(nonatomic,strong) IBInspectable   UIColor     *fillColor;
-@property(nonatomic,strong) IBInspectable   UIColor     *progressColor;
+@property(nonatomic,strong) IBInspectable   UIColor     *progressDownloadColor;
+@property(nonatomic,strong) IBInspectable   UIColor     *progressUploadColor;
+/*!
+ Progress percent -100 (downloading) to 100 (uploading)
+ */
 @property(nonatomic,assign)IBInspectable CGFloat        progress;
 
 @end

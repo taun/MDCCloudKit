@@ -44,7 +44,8 @@
 -(void) initializeDefaultValues {
     _outlineColor = [UIColor blueColor];
     _fillColor = [UIColor whiteColor];
-    _progressColor = [UIColor lightGrayColor];
+    _progressUploadColor = [UIColor greenColor];
+    _progressDownloadColor = [UIColor redColor];
 
     _progress = 0.5;
 }
@@ -70,29 +71,21 @@
     
     
     UIColor *startColor = self.fillColor;
-    UIColor *endColor = self.progressColor;
+    UIColor *endColor = self.progressUploadColor;
     
-    CGFloat gradientCenter = 0;
-    CGPoint gradientStart = CGPointZero;
-    CGPoint gradientEnd = CGPointZero;
+    CGFloat gradientCenter = ABS(self.progress/100.0);
+    CGPoint gradientStart = CGPointMake(12.5, 7.5);
+    CGPoint gradientEnd = CGPointMake(12.5, 18.5);
     
     if (self.progress == 0.0)
     {
         startColor = [self blendColor: startColor WithFraction: 0.5 ofColor: endColor];
     }
-    else if (self.progress > 0)
+    else if (self.progress < 0)
     {
-        gradientStart = CGPointMake(12.5, 7.5);
-        gradientEnd = CGPointMake(12.5, 18.5);
-        
-        gradientCenter = self.progress;
-    }
-    else
-    {
+        endColor = self.progressDownloadColor;
         gradientStart = CGPointMake(12.5, 18.5);
         gradientEnd = CGPointMake(12.5, 7.5);
-        
-        gradientCenter = ABS(self.progress);
     }
     
     //// Gradient Declarations
