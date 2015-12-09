@@ -18,6 +18,8 @@
 
 @implementation MDLCloudKitManager
 
+@synthesize resourceCache = _resourceCache;
+
 -(instancetype)initWithIdentifier:(NSString *)containerIdentifier andRecordType:(NSString *)cloudKitRecordType
 {
     self = [super init];
@@ -40,6 +42,71 @@
 
 - (BOOL)isCloudAvailable {
     return [[NSFileManager defaultManager] ubiquityIdentityToken] != nil;
+}
+
+-(NSCache *)resourceCache
+{
+    if (!_resourceCache) _resourceCache = [NSCache new];
+    return _resourceCache;
+}
+
+-(UIImage*) getCachedImageForRecordName: (NSString*)recordName
+{
+    NSPurgeableData* imageData = [self.resourceCache objectForKey: recordName];
+    
+    UIImage* image;
+    
+    if (imageData)
+    {
+        if ([imageData beginContentAccess])
+        {
+            image = [UIImage imageWithData: imageData];
+            [imageData endContentAccess];
+        }
+    }
+    
+    return image;
+}
+
+-(void) cacheImageData: (NSPurgeableData*)imageData forRecordName: (NSString*)recordName
+{
+    [self.resourceCache setObject: imageData forKey: recordName];
+}
+
+-(void)fetchImageAsset:(NSString *)key forRecordWithID:(NSString *)recordName completionHandler:(void (^)(UIImage *))completionHandler
+{
+    UIImage* cachedThumbnailImage = [self getCachedImageForRecordName: recordName];
+    
+    if (!cachedThumbnailImage)
+    {   // NOT cached so fetch from the cloud.
+        CKRecordID *recordID = [[CKRecordID alloc] initWithRecordName: recordName];
+        CKFetchRecordsOperation* fetchRecordsOp = [[CKFetchRecordsOperation alloc]initWithRecordIDs: @[recordID]];
+        fetchRecordsOp.database = self.publicDatabase;
+        
+        fetchRecordsOp.perRecordCompletionBlock = ^(CKRecord *record, CKRecordID* recordID, NSError* error) {
+     
+            CKAsset* thumbnailAsset = record[key];
+            if (thumbnailAsset)
+            {
+                NSData* thumbnailData = [NSData dataWithContentsOfURL: thumbnailAsset.fileURL];
+                [self cacheImageData: [NSPurgeableData dataWithData: thumbnailData] forRecordName: recordID.recordName];
+                UIImage* cloudThumbnailImage = [UIImage imageWithData: thumbnailData];
+                if (cloudThumbnailImage)
+                {
+                    completionHandler(cloudThumbnailImage);
+                }
+            }
+
+            };
+            
+        fetchRecordsOp.desiredKeys = @[key];
+        fetchRecordsOp.qualityOfService = NSQualityOfServiceUserInitiated;
+        [self.publicDatabase addOperation: fetchRecordsOp];
+    }
+    else
+    {   // cached,
+        completionHandler(cachedThumbnailImage);
+    }
 }
 
 #pragma mark - cloud user info
@@ -102,18 +169,19 @@
     }];
 }
 
-- (void)fetchRecordsWithIDs:(NSArray *)recordIDObjects desiredKeys: (NSArray*)keys perRecordHandler: (void (^)(CKRecord *record, CKRecordID *recordID, NSError *error))perRecordHandler completionHandler:(void (^)(NSDictionary *recordsByRecordID, NSError *operationError))completionHandler
+- (void)fetchRecordsWithIDs:(NSArray *)recordIDObjects desiredKeys: (NSArray*)keys qualityOfService: (NSQualityOfService)quality perRecordHandler: (void (^)(CKRecord *record, CKRecordID *recordID, NSError *error))perRecordHandler completionHandler:(void (^)(NSDictionary *recordsByRecordID, NSError *operationError))completionHandler
 {
     CKFetchRecordsOperation* fetchRecordsOp = [[CKFetchRecordsOperation alloc]initWithRecordIDs: recordIDObjects];
     fetchRecordsOp.database = self.publicDatabase;
     fetchRecordsOp.perRecordCompletionBlock = perRecordHandler;
     fetchRecordsOp.fetchRecordsCompletionBlock = completionHandler;
     fetchRecordsOp.desiredKeys = keys;
+    fetchRecordsOp.qualityOfService = quality;
     [self.publicDatabase addOperation: fetchRecordsOp];
 }
 
 
-- (void)queryForRecordsNearLocation:(CLLocation *)location completionHandler:(void (^)(NSArray *records))completionHandler {
+- (void)queryForRecordsNearLocation:(CLLocation *)location qualityOfService: (NSQualityOfService)quality completionHandler:(void (^)(NSArray *records))completionHandler {
     
     CGFloat radiusInKilometers = 5;
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"distanceToLocation:fromLocation:(location, %@) < %f", location, radiusInKilometers];
@@ -121,6 +189,8 @@
     CKQuery *query = [[CKQuery alloc] initWithRecordType: self.cloudKitRecordType predicate:predicate];
     
     CKQueryOperation *queryOperation = [[CKQueryOperation alloc] initWithQuery:query];
+    
+    queryOperation.qualityOfService = quality;
     
     NSMutableArray *results = [[NSMutableArray alloc] init];
     
@@ -166,9 +236,10 @@
     }];
 }
 
-- (void)savePublicRecords:(NSArray *)records withCompletionHandler:(void (^)(NSError *error))completionHandler
+- (void)savePublicRecords:(NSArray *)records qualityOfService: (NSQualityOfService)quality withCompletionHandler:(void (^)(NSError *error))completionHandler
 {
     CKModifyRecordsOperation* saveOperation = [[CKModifyRecordsOperation alloc]initWithRecordsToSave: records recordIDsToDelete: nil];
+    saveOperation.qualityOfService = quality;
     saveOperation.modifyRecordsCompletionBlock = ^( NSArray *savedRecords, NSArray *deletedRecordIDs, NSError *operationError) {
         if (operationError)
         {
@@ -220,14 +291,18 @@
     [self.publicDatabase addOperation: deleteOperation];
 }
 
--(void)fetchPublicRecordsWithPredicate:(NSPredicate *)predicate sortDescriptors:(NSArray *)descriptors cloudKeys:(NSArray *)cloudKeys perRecordBlock:(void (^)(CKRecord *record))recordBlock completionHandler:(void (^)(NSArray *, NSError *))completionHandler
+-(CKQueryOperation*)fetchPublicRecordsWithPredicate:(NSPredicate *)predicate sortDescriptors:(NSArray *)descriptors cloudKeys:(NSArray *)cloudKeys qualityOfService: (NSQualityOfService)quality resultLimit: (NSUInteger)limit perRecordBlock:(void (^)(CKRecord *record))recordBlock completionHandler:(void (^)(CKQueryCursor *, NSError *))completionHandler
 {
-    [self fetchPublicRecordsWithType: self.cloudKitRecordType predicate: predicate sortDescriptors: descriptors cloudKeys: cloudKeys perRecordBlock: recordBlock completionHandler: completionHandler];
+    return [self fetchPublicRecordsWithType: self.cloudKitRecordType predicate: predicate sortDescriptors: descriptors cloudKeys: cloudKeys qualityOfService: quality perRecordBlock: recordBlock completionHandler: completionHandler];
 }
 
 /*     queryOperation.desiredKeys = @[CommonNameField,SciNameField,WikiField,PhotoAssetField]; */
+- (CKQueryOperation*)fetchPublicRecordsWithType:(NSString *)recordType predicate: (NSPredicate*)predicate sortDescriptors: (NSArray*) descriptors cloudKeys: (NSArray*)cloudKeys qualityOfService: (NSQualityOfService)quality perRecordBlock:(void (^)(CKRecord *record))recordBlock completionHandler:(void (^)(CKQueryCursor *cursor, NSError* error))completionHandler
+{
+    return [self fetchPublicRecordsWithType: recordType predicate: predicate sortDescriptors: descriptors cloudKeys: cloudKeys qualityOfService: quality resultLimit: 0 perRecordBlock: recordBlock completionHandler: completionHandler];
+}
 
-- (void)fetchPublicRecordsWithType:(NSString *)recordType predicate: (NSPredicate*)predicate sortDescriptors: (NSArray*) descriptors cloudKeys: (NSArray*)cloudKeys perRecordBlock:(void (^)(CKRecord *record))recordBlock completionHandler:(void (^)(NSArray *records, NSError* error))completionHandler
+- (CKQueryOperation*)fetchPublicRecordsWithType:(NSString *)recordType predicate: (NSPredicate*)predicate sortDescriptors: (NSArray*) descriptors cloudKeys: (NSArray*)cloudKeys qualityOfService: (NSQualityOfService)quality resultLimit: (NSUInteger)limit perRecordBlock:(void (^)(CKRecord *record))recordBlock completionHandler:(void (^)(CKQueryCursor *cursor, NSError* error))completionHandler
 {
     if (!predicate)
     {
@@ -251,12 +326,10 @@
     CKQueryOperation *queryOperation = [[CKQueryOperation alloc] initWithQuery:query];
     // Just request the name field for all records
     queryOperation.desiredKeys = cloudKeys;
-//    queryOperation.resultsLimit = 4;
-    
-    NSMutableArray *results = [[NSMutableArray alloc] init];
+    if (quality != 0) queryOperation.qualityOfService = quality;
+    if (limit > 0) queryOperation.resultsLimit = limit;
     
     queryOperation.recordFetchedBlock = ^(CKRecord *record) {
-        [results addObject:record];
         recordBlock(record);
     };
 #pragma message "TODO: handle CKQueryCursor for when there are lots of records. Where to add logic?"
@@ -265,19 +338,27 @@
         if (cursor) NSLog(@"FractalScapes optimizer unused query cursor returned: %@", cursor);
         
             dispatch_async(dispatch_get_main_queue(), ^(void){
-                completionHandler(results, error);
+                completionHandler(cursor, error); // changes this to the cursor
             });
     };
     
-    self.currentOperation = queryOperation;
     [self.publicDatabase addOperation: queryOperation];
+    return queryOperation;
 }
 
--(void)cancelCurrentOperation
+-(CKQueryOperation*)fetchNextRecordWithCursor: (CKQueryCursor*)cursor
 {
-    if (self.currentOperation && (self.currentOperation.isReady || self.currentOperation.isExecuting))
+    CKQueryOperation* nextOperation = [[CKQueryOperation alloc]initWithCursor: cursor];
+    [self.publicDatabase addOperation: nextOperation];
+    
+    return nextOperation;
+}
+
+-(void)cancelOperation: (CKQueryOperation*)operation
+{
+    if (operation && (operation.isReady || operation.isExecuting))
     {
-        [self.currentOperation cancel];
+        [operation cancel];
     }
 }
 

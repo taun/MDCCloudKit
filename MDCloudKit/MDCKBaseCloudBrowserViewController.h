@@ -2,7 +2,9 @@
 //  Copyright (c) 2015 MOEDAE LLC. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+@import UIKit;
+@import CloudKit;
+
 #import "MDCKCloudManagerAppModelProtocol.H"
 
 /*!
@@ -31,6 +33,10 @@
  Keys to fetch of public records
  */
 @property(nonatomic,strong) NSArray                                         *cloudDownloadKeys;
+/*!
+ Cloud key for separate thumbnail download
+ */
+@property(nonatomic,strong) NSString                                        *cloudThumbnailKey;
 /*!
  Whether connected to the network
  */
@@ -67,6 +73,11 @@
  button outlet enabled and disabled based on whether there is a current selection
  */
 @property (weak, nonatomic) IBOutlet UIBarButtonItem                        *getSelectedButton;
+/*!
+ Hold Current search so it can be cancelled
+ */
+@property (weak,nonatomic) CKQueryOperation                                 *currentSearchOperation;
+@property (assign, nonatomic) BOOL                                          textWasEdited;
 /*!
  Setup the search bar controller
  */
