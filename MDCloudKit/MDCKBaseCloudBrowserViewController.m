@@ -23,6 +23,7 @@
 @property(nonatomic,strong) NSMutableDictionary                              *publicRecordsCacheByRecordIDName;
 
 @property(nonatomic,strong) NSTimer                                          *networkTimer;
+@property(nonatomic,assign) BOOL                                             networkTimeout;
 
 @end
 
@@ -136,7 +137,7 @@
              }
              else
              {
-                 if (error.code != CKErrorOperationCancelled)
+                 if (self.networkTimeout || error.code != CKErrorOperationCancelled)
                  {  // need to skip when the operation was cancelled due to typing
                      [self handleFetchRequestError: error];
                  }
@@ -152,98 +153,118 @@
 
 -(void) handleFetchRequestError: (NSError*)error
 {
-    self.networkConnected = NO;
-    BOOL giveRetryOption = NO;
-    
-    NSString *title;
-    NSString *message;
-    NSLog(@"%@ error code: %ld, %@",NSStringFromSelector(_cmd),(long)error.code,[error.userInfo debugDescription]);
-    CKErrorCode code = error.code;
-    
-    switch (code) {
-        case CKErrorInternalError: // 1
-            title = NSLocalizedString(@"Network problem", nil);
-            message = @"Please try again in couple of minutes";
-            break;
-            
-        case CKErrorPartialFailure: // 2
-            title = NSLocalizedString(@"Network problem", nil);
-            message = @"Please try again in couple of minutes";
-            break;
-            
-        case CKErrorNetworkUnavailable: // 3
-            title = NSLocalizedString(@"No Network", nil);
-            message = @"Please try again when connected to a network";
-            break;
-            
-        case CKErrorNetworkFailure: // 4
-            title = NSLocalizedString(@"Network problem", nil);
-            message = @"Please try again in couple of minutes";
-            break;
-            
-        case CKErrorServiceUnavailable: // 6
-            title = NSLocalizedString(@"Cloud Unavailable", nil);
-            message = @"iCloud is temporarily unavailable. Please try again in couple of minutes";
-            break;
-            
-        case CKErrorRequestRateLimited: // 7
-            title = NSLocalizedString(@"Cloud Unavailable", nil);
-            message = [NSString stringWithFormat: @"iCloud is temporarily unavailable. Please try again in %@ seconds",error.userInfo[@"CKRetryAfter"]];
-            break;
-            
-        case CKErrorZoneBusy: // 23
-            title = NSLocalizedString(@"Too Much Traffic", nil);
-            message = @"Please try again in couple of minutes";
-            break;
-            
-        case CKErrorOperationCancelled: // 20
-            title = NSLocalizedString(@"Cloud Timeout", nil);
-            message = @"Try again later";
-            giveRetryOption = YES;
-            break;
-            
-        case CKErrorQuotaExceeded: // 25
-            title = NSLocalizedString(@"Cloud quota reached", nil);
-            message = @"Free some cloud space";
-            break;
-            
-        default:
-            title = NSLocalizedString(@"Problem with the Cloud", nil);
-            message = @"Try again later.";
-            break;
+    if (self.presentedViewController)
+    {
+        // welcome screen is up or some other modally presented view and we need to defer the error box.
+        self.fetchRequestError = error;
+        self.handlingFetchRequestErrorWasPostponed = YES;
     }
-    
-    [Answers logCustomEventWithName: NSStringFromClass([self class]) customAttributes: @{@"Fetch error": @(error.code)}];
+    else
+    {
+        self.handlingFetchRequestErrorWasPostponed = NO;
+        self.networkConnected = NO;
+        BOOL giveRetryOption = NO;
+        
+        NSString *title;
+        NSString *message;
+        NSLog(@"%@ error code: %ld, %@",NSStringFromSelector(_cmd),(long)error.code,[error.userInfo debugDescription]);
+        CKErrorCode code = error.code;
+        
+        switch (code) {
+            case CKErrorInternalError: // 1
+                title = NSLocalizedString(@"Network problem", nil);
+                message = @"Please try again in couple of minutes";
+                break;
+                
+            case CKErrorPartialFailure: // 2
+                title = NSLocalizedString(@"Network problem", nil);
+                message = @"Please try again in couple of minutes";
+                break;
+                
+            case CKErrorNetworkUnavailable: // 3
+                title = NSLocalizedString(@"No Network", nil);
+                message = @"Please try again when connected to a network";
+                break;
+                
+            case CKErrorNetworkFailure: // 4
+                title = NSLocalizedString(@"Network problem", nil);
+                message = @"Please try again in couple of minutes";
+                break;
+                
+            case CKErrorServiceUnavailable: // 6
+                title = NSLocalizedString(@"Cloud Unavailable", nil);
+                message = @"iCloud is temporarily unavailable. Please try again in couple of minutes";
+                break;
+                
+            case CKErrorRequestRateLimited: // 7
+                title = NSLocalizedString(@"Cloud Unavailable", nil);
+                message = [NSString stringWithFormat: @"iCloud is temporarily unavailable. Please try again in %@ seconds",error.userInfo[@"CKRetryAfter"]];
+                break;
+                
+            case CKErrorZoneBusy: // 23
+                title = NSLocalizedString(@"Too Much Traffic", nil);
+                message = @"Please try again in couple of minutes";
+                break;
+                
+            case CKErrorOperationCancelled: // 20
+                title = NSLocalizedString(@"Cloud Timeout", nil);
+                message = @"Try again later";
+                giveRetryOption = YES;
+                break;
+                
+            case CKErrorQuotaExceeded: // 25
+                title = NSLocalizedString(@"Cloud quota reached", nil);
+                message = @"Free some cloud space";
+                break;
+                
+            default:
+                title = NSLocalizedString(@"Problem with the Cloud", nil);
+                message = @"Try again later.";
+                break;
+        }
+        
+        [Answers logCustomEventWithName: NSStringFromClass([self class]) customAttributes: @{@"Fetch error": @(error.code)}];
+        
+        NSMutableArray* actions = [NSMutableArray new];
+        
+        if (giveRetryOption)
+        {
+            NSString* actionTitle = NSLocalizedString(@"Retry Now", @"Try the action again now");
+            UIAlertAction* retryAction = [UIAlertAction actionWithTitle: actionTitle style: UIAlertActionStyleDefault handler:^(UIAlertAction * action)
+                                          {
+                                              //                                          [weakAlert dismissViewControllerAnimated:YES completion:nil];
+                                              [self updateSearchResultsForSearchController: self.searchController];
+                                          }];
+            
+            [actions addObject: retryAction];
+        }
+        
+        NSString *okActionTitle = NSLocalizedString(@"Ok", nil);
+        
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle: okActionTitle style: UIAlertActionStyleCancel handler:^(UIAlertAction * action)
+                                        {
+                                            //                                        [weakAlert dismissViewControllerAnimated:YES completion:nil];
+                                        }];
+        
+        [actions addObject: defaultAction];
+        
+        [self presentFetchErrorAlertTitle: title message: message withActions: actions];
+    }
+}
 
+-(void)presentFetchErrorAlertTitle: (NSString*)title message: (NSString*)message withActions: (NSMutableArray<UIAlertAction*>*)alertActions
+{
+  
     UIAlertController* alert = [UIAlertController alertControllerWithTitle: title
                                                                    message: message
                                                             preferredStyle: UIAlertControllerStyleAlert];
-    
-    UIAlertController* __weak weakAlert = alert;
-    
-    if (giveRetryOption)
-    {
-        NSString* actionTitle = NSLocalizedString(@"Retry Now", @"Try the action again now");
-        UIAlertAction* retryAction = [UIAlertAction actionWithTitle: actionTitle style: UIAlertActionStyleDefault handler:^(UIAlertAction * action)
-                                      {
-//                                          [weakAlert dismissViewControllerAnimated:YES completion:nil];
-                                          [self updateSearchResultsForSearchController: self.searchController];
-                                      }];
-        
-        [alert addAction: retryAction];
-    }
 
-    NSString *okActionTitle = NSLocalizedString(@"Ok", nil);
+    for (UIAlertAction* action in alertActions)
+    {
+        [alert addAction: action];
+    }
     
-    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle: okActionTitle style: UIAlertActionStyleCancel handler:^(UIAlertAction * action)
-                                    {
-//                                        [weakAlert dismissViewControllerAnimated:YES completion:nil];
-                                    }];
-    
-    [alert addAction: defaultAction];
-    
-#pragma message "TODO how to include additional options from subclass?"
-    [self presentViewController: weakAlert animated: YES completion:^{
+    [self presentViewController: alert animated: YES completion:^{
         //
     }];
 }
@@ -299,6 +320,7 @@
 -(void)startNetworkTimerWithInterval: (NSTimeInterval)timeout
 {
     [self.activityIndicator startAnimating];
+    self.networkTimeout = NO;
     self.networkTimer = [NSTimer timerWithTimeInterval: timeout
                                                 target: self
                                               selector: @selector(networkTimeoutTriggeredBy:)
@@ -320,6 +342,7 @@
 -(void)networkTimeoutTriggeredBy: (NSTimer*)timer
 {
     [Answers logCustomEventWithName: NSStringFromClass([self class]) customAttributes: @{@"Network Timeout": @YES}];
+    self.networkTimeout = YES;
     [self.appModel.cloudKitManager cancelOperation: self.currentSearchOperation];
     [self.activityIndicator stopAnimating];
 //    [self showAlertActionsNetworkTimeout: self];

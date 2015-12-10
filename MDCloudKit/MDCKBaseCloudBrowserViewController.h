@@ -77,6 +77,8 @@
  Hold Current search so it can be cancelled
  */
 @property (weak,nonatomic) CKQueryOperation                                 *currentSearchOperation;
+@property(nonatomic,assign)BOOL                                             handlingFetchRequestErrorWasPostponed;
+@property(nonatomic,strong)NSError                                          *fetchRequestError;
 @property (assign, nonatomic) BOOL                                          textWasEdited;
 /*!
  Setup the search bar controller
@@ -103,6 +105,7 @@
  @param error the fetch error
  */
 -(void) handleFetchRequestError: (NSError*)error;
+-(void)presentFetchErrorAlertTitle: (NSString*)title message: (NSString*)message withActions: (NSMutableArray<UIAlertAction*>*)alertActions;
 /*!
  Download action
  
