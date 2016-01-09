@@ -7,6 +7,7 @@
 
 
 #import "MDLCloudKitManager.h"
+#import "NSString+MDKConvenience.h"
 
 @interface MDLCloudKitManager ()
 
@@ -24,7 +25,7 @@
 {
     self = [super init];
     if (self) {
-        if (containerIdentifier && containerIdentifier.length > 0)
+        if ([containerIdentifier isNonEmptyString])
         {
             _container = [CKContainer containerWithIdentifier: containerIdentifier];
         }
