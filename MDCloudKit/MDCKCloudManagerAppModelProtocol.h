@@ -5,9 +5,11 @@
 #import <Foundation/Foundation.h>
 
 @class MDLCloudKitManager;
+@class MDLPlantManager;
 
 @protocol MDCKCloudManagerAppModelProtocol <NSObject>
 
 @property(nonatomic,readonly) MDLCloudKitManager                *cloudKitManager;
+@property(nonatomic,readonly) MDLPlantManager                   *plantManager;
 
 @end
