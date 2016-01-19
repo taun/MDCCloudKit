@@ -506,6 +506,22 @@
 }
 
 #pragma mark - UICollectionViewDelegate
+-(BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    UICollectionViewCell* cell = [collectionView cellForItemAtIndexPath: indexPath];
+    
+    if (cell.isSelected)
+    {
+        [collectionView deselectItemAtIndexPath: indexPath animated: YES];
+        self.getSelectedButton.enabled = NO;
+        return NO;
+    }
+    else
+    {
+        return YES;
+    }
+}
+
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     self.getSelectedButton.enabled = YES;
