@@ -12,4 +12,7 @@
 @property(nonatomic,readonly) MDLCloudKitManager                *cloudKitManager;
 @property(nonatomic,readonly) MDLPlantManager                   *plantManager;
 
+-(void)lazyInstantiatePlantManager;
+-(void)lazyInstantiateCloudKitManager;
+
 @end
