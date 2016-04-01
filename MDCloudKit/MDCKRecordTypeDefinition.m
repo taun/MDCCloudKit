@@ -21,7 +21,7 @@
         [self decodeVersion1WithCoder:  aDecoder];
         
     }
-    //    NSLog(@"Loaded Fractal: %@",self.name);
+    //    DDLogInfo(@"Loaded Fractal: %@",self.name);
     return self;
 }
 

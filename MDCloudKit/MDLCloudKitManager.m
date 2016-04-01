@@ -118,7 +118,7 @@
                                completionHandler:^(CKApplicationPermissionStatus applicationPermissionStatus, NSError *error) {
                                    if (error) {
                                        // In your app, handle this error really beautifully.
-                                       NSLog(@"An error occured in %@: %@", NSStringFromSelector(_cmd), error);
+                                       DDLogError(@"DaisySensorLog An error occured in %@: %@", NSStringFromSelector(_cmd), error);
 //                                       abort();
                                    } else {
                                        dispatch_async(dispatch_get_main_queue(), ^{
@@ -134,14 +134,14 @@
         
         if (error) {
             // In your app, handle this error in an awe-inspiring way.
-            NSLog(@"An error occured in %@: %@", NSStringFromSelector(_cmd), error);
+            DDLogError(@"DaisySensorLog An error occured in %@: %@", NSStringFromSelector(_cmd), error);
             abort();
         } else {
             [self.container discoverUserInfoWithUserRecordID:recordID
                                            completionHandler:^(CKDiscoveredUserInfo *user, NSError *derror) {
                                                if (derror) {
                                                    // In your app, handle this error deftly.
-                                                   NSLog(@"An error occured in %@: %@", NSStringFromSelector(_cmd), error);
+                                                   DDLogError(@"DaisySensorLog An error occured in %@: %@", NSStringFromSelector(_cmd), error);
                                                    abort();
                                                } else {
                                                    dispatch_async(dispatch_get_main_queue(), ^(void){
@@ -160,7 +160,7 @@
         
         if (error) {
             // In your app, handle this error gracefully.
-            NSLog(@"An error occured in %@: %@", NSStringFromSelector(_cmd), error);
+            DDLogError(@"DaisySensorLog An error occured in %@: %@", NSStringFromSelector(_cmd), error);
             abort();
         } else {
             dispatch_async(dispatch_get_main_queue(), ^(void){
@@ -202,7 +202,7 @@
     queryOperation.queryCompletionBlock = ^(CKQueryCursor *cursor, NSError *error) {
         if (error) {
             // In your app, handle this error with such perfection that your users will never realize an error occurred.
-            NSLog(@"An error occured in %@: %@", NSStringFromSelector(_cmd), error);
+            DDLogError(@"DaisySensorLog An error occured in %@: %@", NSStringFromSelector(_cmd), error);
             abort();
         } else {
             dispatch_async(dispatch_get_main_queue(), ^(void){
@@ -221,14 +221,14 @@
         if (error)
         {
             // In your app, handle this error awesomely.
-            NSLog(@"An error occured in %@: %@", NSStringFromSelector(_cmd), error);
+            DDLogError(@"DaisySensorLog An error occured in %@: %@", NSStringFromSelector(_cmd), error);
             
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 completionHandler(error);
             });
         } else
         {
-            NSLog(@"Successfully saved record");
+            DDLogInfo(@"Successfully saved record");
             
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 completionHandler(error);
@@ -245,7 +245,7 @@
         if (operationError)
         {
             // In your app, handle this error awesomely.
-            NSLog(@"An error occured in %@: %@", NSStringFromSelector(_cmd), operationError);
+            DDLogError(@"DaisySensorLog An error occured in %@: %@", NSStringFromSelector(_cmd), operationError);
             
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 completionHandler(operationError);
@@ -253,7 +253,7 @@
         }
         else
         {
-            NSLog(@"Successfully saved records");
+            DDLogInfo(@"Successfully saved records");
             
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 completionHandler(operationError);
@@ -268,10 +268,10 @@
     [self.publicDatabase deleteRecordWithID: record.recordID completionHandler:^(CKRecordID *recordID, NSError *error) {
         if (error) {
             // In your app, handle this error. Please.
-            NSLog(@"An error occured in %@: %@", NSStringFromSelector(_cmd), error);
+            DDLogError(@"DaisySensorLog An error occured in %@: %@", NSStringFromSelector(_cmd), error);
             abort();
         } else {
-            NSLog(@"Successfully deleted record");
+            DDLogInfo(@"Successfully deleted record");
         }
     }];
 }
@@ -283,10 +283,10 @@
     deleteOperation.modifyRecordsCompletionBlock = ^( NSArray *savedRecords, NSArray *deletedRecordIDs, NSError *operationError) {
         if (operationError) {
             // In your app, handle this error. Please.
-            NSLog(@"An error occured in %@: %@", NSStringFromSelector(_cmd), operationError);
+            DDLogError(@"DaisySensorLog An error occured in %@: %@", NSStringFromSelector(_cmd), operationError);
             abort();
         } else {
-            NSLog(@"Successfully deleted records");
+            DDLogInfo(@"Successfully deleted records");
         }
     };
     [self.publicDatabase addOperation: deleteOperation];
@@ -336,7 +336,7 @@
 #pragma message "TODO: handle CKQueryCursor for when there are lots of records. Where to add logic?"
     queryOperation.queryCompletionBlock = ^(CKQueryCursor *cursor, NSError *error) {
         
-        if (cursor) NSLog(@"FractalScapes optimizer unused query cursor returned: %@", cursor);
+        if (cursor) DDLogWarn(@"DaisySensorLog FractalScapes optimizer unused query cursor returned: %@", cursor);
         
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 completionHandler(cursor, error); // changes this to the cursor
@@ -384,7 +384,7 @@
 //    queryOperation.queryCompletionBlock = ^(CKQueryCursor *cursor, NSError *error) {
 //        if (error) {
 //            // In your app, you should do the Right Thing
-//            NSLog(@"An error occured in %@: %@", NSStringFromSelector(_cmd), error);
+//            DDLogInfo(@"An error occured in %@: %@", NSStringFromSelector(_cmd), error);
 //            abort();
 //        } else {
 //            dispatch_async(dispatch_get_main_queue(), ^(void){
@@ -413,10 +413,10 @@
         [self.publicDatabase saveSubscription:itemSubscription completionHandler:^(CKSubscription *subscription, NSError *error) {
             if (error) {
                 // In your app, handle this error appropriately.
-                NSLog(@"An error occured in %@: %@", NSStringFromSelector(_cmd), error);
+                DDLogError(@"DaisySensorLog An error occured in %@: %@", NSStringFromSelector(_cmd), error);
                 abort();
             } else {
-                NSLog(@"Subscribed to Item");
+                DDLogInfo(@"DaisySensorLog Subscribed to Item");
                 NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
                 [defaults setBool:YES forKey:@"subscribed"];
                 [defaults setObject:subscription.subscriptionID forKey: self.cloudSubscriptionIDKey];
@@ -436,10 +436,10 @@
         modifyOperation.modifySubscriptionsCompletionBlock = ^(NSArray *savedSubscriptions, NSArray *deletedSubscriptionIDs, NSError *error) {
             if (error) {
                 // In your app, handle this error beautifully.
-                NSLog(@"An error occured in %@: %@", NSStringFromSelector(_cmd), error);
+                DDLogError(@"DaisySensorLog An error occured in %@: %@", NSStringFromSelector(_cmd), error);
                 abort();
             } else {
-                NSLog(@"Unsubscribed to Item");
+                DDLogInfo(@"DaisySensorLog Unsubscribed to Item");
                 [[NSUserDefaults standardUserDefaults] removeObjectForKey: self.cloudSubscriptionIDKey];
             }
         };

@@ -96,7 +96,7 @@
 
 - (void)parser:(CHCSVParser *)parser didFailWithError:(NSError *)error
 {
-    NSLog(@"CSV Parse error: %@", error);
+    DDLogError(@"DaisySensorLog CSV Parse error: %@", error);
 }
 
 @end

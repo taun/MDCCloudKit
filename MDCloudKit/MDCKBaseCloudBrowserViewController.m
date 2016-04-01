@@ -158,7 +158,7 @@
     
     NSString *title;
     NSString *message;
-    NSLog(@"%@ error code: %ld, %@",NSStringFromSelector(_cmd),(long)error.code,[error.userInfo debugDescription]);
+    DDLogError(@"%@ error code: %ld, %@",NSStringFromSelector(_cmd),(long)error.code,[error.userInfo debugDescription]);
     CKErrorCode code = error.code;
     
     switch (code) {
