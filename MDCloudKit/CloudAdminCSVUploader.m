@@ -330,7 +330,7 @@
 {
     _importedCSVData = [MDCKCSVDataObject csvDataObjectWithContentsOfCSVURL: theCSVFile];
     NSDictionary* csvData = _importedCSVData.parsedColumns;
-    DDLogInfo(@"%@", csvData);
+    NSLog(@"%@", csvData);
 }
 
 -(IBAction) sendDataToPublicCloudContainer:(id)sender
@@ -375,7 +375,7 @@
                 
                 [self.recordsToExport addObject: record];
 
-                DDLogInfo(@"LineNumber: %lu; Record: %@",index,record);
+                NSLog(@"LineNumber: %lu; Record: %@",index,record);
             }
             
             NSMutableArray* cloudKeys = [NSMutableArray new];
@@ -416,14 +416,14 @@
 //    NSMutableArray* recordsToAdd = [NSMutableArray new];
 //    NSMutableArray* recordsToUpdate = [NSMutableArray new];
     
-    DDLogInfo(@"Existing Records of type: %@; %@", recordType, currentRecords);
+    NSLog(@"Existing Records of type: %@; %@", recordType, currentRecords);
     
     if (self.applyExport)
     {
 //        self.cloudKitManager.cloudKitRecordType = recordType;
         
         [self.cloudKitManager savePublicRecords: self.recordsToExport qualityOfService: NSQualityOfServiceUserInitiated withCompletionHandler:^(NSError *error) {
-            DDLogError(@"Saved Records: %@; Error:%@", self.recordsToExport, error);
+            NSLog(@"Saved Records: %@; Error:%@", self.recordsToExport, error);
         }];
     }
 }

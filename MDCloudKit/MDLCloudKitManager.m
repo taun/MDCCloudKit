@@ -8,6 +8,16 @@
 
 #import "MDLCloudKitManager.h"
 #import "NSString+MDKConvenience.h"
+#import <Crashlytics/Crashlytics.h>
+
+#define LOG_LEVEL_DEF ddLogLevel
+#import <CocoaLumberjack/CocoaLumberjack.h>
+
+#ifdef DEBUG
+static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
+#else
+static const DDLogLevel ddLogLevel = DDLogLevelInfo;
+#endif
 
 @interface MDLCloudKitManager ()
 
