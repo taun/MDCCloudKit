@@ -138,22 +138,28 @@ static const DDLogLevel ddLogLevel = DDLogLevelInfo;
                                }];
 }
 
-- (void)discoverUserInfo:(void (^)(CKDiscoveredUserInfo *user))completionHandler {
+- (void)discoverUserInfo:(void (^)(CKDiscoveredUserInfo *user))completionHandler
+{
     
     [self.container fetchUserRecordIDWithCompletionHandler:^(CKRecordID *recordID, NSError *error) {
         
-        if (error) {
+        if (error)
+        {
             // In your app, handle this error in an awe-inspiring way.
-            DDLogError(@"DaisySensorLog An error occured in %@: %@", NSStringFromSelector(_cmd), error);
-            abort();
-        } else {
+            DDLogError(@"An error occured in %@: %@", NSStringFromSelector(_cmd), error);
+        }
+        else
+        {
             [self.container discoverUserInfoWithUserRecordID:recordID
                                            completionHandler:^(CKDiscoveredUserInfo *user, NSError *derror) {
-                                               if (derror) {
+                                               if (derror)
+                                               {
                                                    // In your app, handle this error deftly.
-                                                   DDLogError(@"DaisySensorLog An error occured in %@: %@", NSStringFromSelector(_cmd), error);
-                                                   abort();
-                                               } else {
+                                                   DDLogError(@"An error occured in %@: %@", NSStringFromSelector(_cmd), derror);
+                                                   // Don't do anything if a network error
+                                               }
+                                               else
+                                               {
                                                    dispatch_async(dispatch_get_main_queue(), ^(void){
                                                        completionHandler(user);
                                                    });
