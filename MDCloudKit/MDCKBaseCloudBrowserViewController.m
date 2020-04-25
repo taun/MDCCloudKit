@@ -8,6 +8,8 @@
 
 #import "MDCKBaseCloudBrowserViewController.h"
 #import "MDLCloudKitManager.h"
+#import "MDKUICollectionViewResizingFlowLayout.h"
+#import "MDBResizingWidthFlowLayoutDelegate.h"
 
 #import <Crashlytics/Crashlytics.h>
 
@@ -24,6 +26,8 @@
 
 @property(nonatomic,strong) NSTimer                                          *networkTimer;
 @property(nonatomic,assign) BOOL                                             networkTimeout;
+
+@property (nonatomic,assign) CGSize                                          baseCellSize;
 
 @end
 
@@ -293,6 +297,8 @@
     [super viewDidLoad];
     
     [self setupSearchController];
+    UICollectionViewFlowLayout* layout = (UICollectionViewFlowLayout*)self.collectionView.collectionViewLayout;
+    self.baseCellSize = CGSizeMake(layout.itemSize.width, layout.itemSize.height);
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -316,6 +322,28 @@
     [super viewWillDisappear:animated];
     self.searchController.delegate = nil;
 }
+
+-(void) viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+{
+    [super viewWillTransitionToSize: size withTransitionCoordinator: coordinator];
+    
+    // Important! need to invalidate before starting rotation animation, otherwise a crash due to cells not being where expected
+//    [MDBResizingWidthFlowLayoutDelegate invalidateFlowLayoutAttributesForCollection: self.collectionView];
+
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context){
+        //
+    } completion:^(id<UIViewControllerTransitionCoordinatorContext> context){
+        //
+        if (self.searchController.active)
+        {
+            [self.searchController.searchBar setNeedsLayout];
+            [self.searchController.searchBar layoutIfNeeded];
+        }
+        [self updateCollectionViewOffsetForNavAndSearch];
+    }];
+    //    subLayer.position = self.fractalView.center;
+}
+
 
 -(void)startNetworkTimerWithInterval: (NSTimeInterval)timeout
 {
@@ -388,27 +416,6 @@
 -(void)sendUserToSystemiCloudSettings: (id)sender
 {
     [[UIApplication sharedApplication] openURL: [NSURL URLWithString:@"prefs:root=iCloud"]];
-}
-
-
--(void) viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
-{
-    [super viewWillTransitionToSize: size withTransitionCoordinator: coordinator];
-    
-    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context){
-        //
-        
-    } completion:^(id<UIViewControllerTransitionCoordinatorContext> context){
-        //
-        [self.collectionView.collectionViewLayout invalidateLayout];
-        if (self.searchController.active)
-        {
-            [self.searchController.searchBar setNeedsLayout];
-            [self.searchController.searchBar layoutIfNeeded];
-        }
-        [self updateCollectionViewOffsetForNavAndSearch];
-        
-    }];
 }
 
 -(void)updateCollectionViewOffsetForNavAndSearch
@@ -488,20 +495,10 @@
 }
 
 #pragma mark - FlowLayoutDelegate
-- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    CGFloat minInset = 2.0;
-    
-    UICollectionViewFlowLayout* layout = (UICollectionViewFlowLayout*)collectionViewLayout;
-    CGFloat itemWidth = layout.itemSize.width;
-    CGFloat rowWidth = collectionView.bounds.size.width - (2*minInset);
-    NSInteger numItems = floorf(rowWidth/itemWidth);
-    CGFloat margins = floorf((rowWidth - (numItems * itemWidth))/(numItems+1.0));
-    //    margins = MAX(margins, 4.0);
-    UIEdgeInsets oldInsets = layout.sectionInset;
-    UIEdgeInsets insets = UIEdgeInsetsMake(oldInsets.top, margins, oldInsets.bottom, margins);
-    return insets;
-    //    return 20.0;
+    // Should have a test for layout type
+    return [MDBResizingWidthFlowLayoutDelegate collectionView: collectionView layout: collectionViewLayout sizeForItemAtIndexPath: indexPath withBaseSize: self.baseCellSize];
 }
 
 #pragma mark - UICollectionViewDataSource
