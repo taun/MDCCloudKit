@@ -11,7 +11,6 @@
 #import "MDKUICollectionViewResizingFlowLayout.h"
 #import "MDBResizingWidthFlowLayoutDelegate.h"
 
-#import <Crashlytics/Crashlytics.h>
 
 @interface MDCKBaseCloudBrowserViewController ()
 
@@ -123,7 +122,6 @@
              [self stopNetworkTimer];
              
              NSTimeInterval fetchInterval = [fetchStartDate timeIntervalSinceNow];
-             [Answers logCustomEventWithName: NSStringFromClass([self class]) customAttributes: @{@"Successful fetch interval": @(fetchInterval)}];
              
              if (!error)
              {
@@ -226,9 +224,7 @@
                 message = @"Try again later.";
                 break;
         }
-        
-        [Answers logCustomEventWithName: NSStringFromClass([self class]) customAttributes: @{@"Fetch error": @(error.code)}];
-        
+                
         NSMutableArray* actions = [NSMutableArray new];
         
         if (giveRetryOption)
@@ -369,7 +365,6 @@
 
 -(void)networkTimeoutTriggeredBy: (NSTimer*)timer
 {
-    [Answers logCustomEventWithName: NSStringFromClass([self class]) customAttributes: @{@"Network Timeout": @YES}];
     self.networkTimeout = YES;
     [self.appModel.cloudKitManager cancelOperation: self.currentSearchOperation];
     [self.activityIndicator stopAnimating];
@@ -392,7 +387,6 @@
     UIAlertAction* fractalCloud = [UIAlertAction actionWithTitle:@"Go to iCloud Settings" style:UIAlertActionStyleDefault
                                                          handler:^(UIAlertAction * action)
                                    {
-                                       [Answers logCustomEventWithName: NSStringFromClass([self class]) customAttributes: @{@"Share action": @"iCloud Settings"}];
                                        [weakAlert dismissViewControllerAnimated:YES completion:nil]; // because of popover mode
                                        [self sendUserToSystemiCloudSettings: sender];
                                    }];
@@ -401,7 +395,6 @@
     UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Later Maybe" style:UIAlertActionStyleCancel
                                                           handler:^(UIAlertAction * action)
                                     {
-                                        [Answers logCustomEventWithName: NSStringFromClass([self class]) customAttributes: @{@"Share action": @"Later"}];
                                         [weakAlert dismissViewControllerAnimated:YES completion:nil]; // because of popover mode
                                     }];
     [alert addAction: defaultAction];
