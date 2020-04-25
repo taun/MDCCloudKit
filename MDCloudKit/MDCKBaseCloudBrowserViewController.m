@@ -514,7 +514,7 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return nil;
+    return [UICollectionViewCell new];
 }
 
 #pragma mark - UICollectionViewDelegate
