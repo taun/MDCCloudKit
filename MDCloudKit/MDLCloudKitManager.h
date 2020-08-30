@@ -24,7 +24,7 @@
 
 #pragma mark - CloudKit
 - (void)requestDiscoverabilityPermission:(void (^)(BOOL discoverable))completionHandler;
-- (void)discoverUserInfo:(void (^)(CKDiscoveredUserInfo *user))completionHandler;
+- (void)discoverUserInfo:(void (^)(CKUserIdentity *user))completionHandler;
 
 - (void)uploadAssetWithURL:(NSURL *)assetURL completionHandler:(void (^)(CKRecord *record))completionHandler;
 - (void)addRecordWithName:(NSString *)name location:(CLLocation *)location completionHandler:(void (^)(CKRecord *record))completionHandler;

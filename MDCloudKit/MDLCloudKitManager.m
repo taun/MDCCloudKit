@@ -127,7 +127,7 @@
                                }];
 }
 
-- (void)discoverUserInfo:(void (^)(CKDiscoveredUserInfo *user))completionHandler {
+- (void)discoverUserInfo:(void (^)(CKUserIdentity *user))completionHandler {
     
     [self.container fetchUserRecordIDWithCompletionHandler:^(CKRecordID *recordID, NSError *error) {
         
@@ -136,8 +136,8 @@
             NSLog(@"An error occured in %@: %@", NSStringFromSelector(_cmd), error);
             abort();
         } else {
-            [self.container discoverUserInfoWithUserRecordID:recordID
-                                           completionHandler:^(CKDiscoveredUserInfo *user, NSError *derror) {
+            [self.container discoverUserIdentityWithUserRecordID:recordID
+                                           completionHandler:^(CKUserIdentity *user, NSError *derror) {
                                                if (derror) {
                                                    // In your app, handle this error deftly.
                                                    NSLog(@"An error occured in %@: %@", NSStringFromSelector(_cmd), error);
@@ -400,9 +400,9 @@
     if (self.subscribed == NO) {
         
         NSPredicate *truePredicate = [NSPredicate predicateWithValue:YES];
-        CKSubscription *itemSubscription = [[CKSubscription alloc] initWithRecordType: self.cloudKitRecordType
+        CKQuerySubscription *itemSubscription = [[CKQuerySubscription alloc] initWithRecordType: self.cloudKitRecordType
                                                                             predicate: truePredicate
-                                                                              options: CKSubscriptionOptionsFiresOnRecordCreation];
+                                                                              options: CKQuerySubscriptionOptionsFiresOnRecordCreation];
         
         
         CKNotificationInfo *notification = [[CKNotificationInfo alloc] init];
