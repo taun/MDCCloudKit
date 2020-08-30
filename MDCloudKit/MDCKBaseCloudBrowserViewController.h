@@ -5,7 +5,7 @@
 @import UIKit;
 @import CloudKit;
 
-#import "MDCKCloudManagerAppModelProtocol.H"
+#import "MDCKCloudManagerAppModelProtocol.h"
 
 /*!
  Base class for searching CloudKit app public container.
@@ -24,19 +24,19 @@
 /*!
  Application Global model
  */
-@property (nonatomic,strong) id<MDCKCloudManagerAppModelProtocol>           appModel;
+@property (nonatomic,strong,nullable) id<MDCKCloudManagerAppModelProtocol>           appModel;
 /*!
  Fetched public cloud records
  */
-@property(nonatomic,readonly,strong) NSMutableArray                         *publicCloudRecords;
+@property(nonatomic,readonly,strong,nullable) NSMutableArray                         *publicCloudRecords;
 /*!
  Keys to fetch of public records
  */
-@property(nonatomic,strong) NSArray                                         *cloudDownloadKeys;
+@property(nonatomic,strong,nullable) NSArray                                         *cloudDownloadKeys;
 /*!
  Cloud key for separate thumbnail download
  */
-@property(nonatomic,strong) NSString                                        *cloudThumbnailKey;
+@property(nonatomic,strong,nullable) NSString                                        *cloudThumbnailKey;
 /*!
  Whether connected to the network
  */
@@ -44,42 +44,42 @@
 /*!
  Cloud search controller
  */
-@property(nonatomic,strong) UISearchController                              *searchController;
+@property(nonatomic,strong,nullable) UISearchController                              *searchController;
 /*!
  The collectionView for showing the records
  */
-@property (weak, nonatomic) IBOutlet UICollectionView                       *collectionView;
+@property (weak, nonatomic,nullable) IBOutlet UICollectionView                       *collectionView;
 /*!
  Fetch activity indicator
  */
-@property (weak, nonatomic) IBOutlet UIActivityIndicatorView                *activityIndicator;
+@property (weak, nonatomic,nullable) IBOutlet UIActivityIndicatorView                *activityIndicator;
 /*!
  Fetch activity indicator
  */
-@property (weak, nonatomic) IBOutlet UILabel                                *emptySearchResultLabel;
+@property (weak, nonatomic,nullable) IBOutlet UILabel                                *emptySearchResultLabel;
 /*!
  Search bar view container
  */
-@property (weak, nonatomic) IBOutlet UIView                                 *searchBarContainer;
+@property (weak, nonatomic,nullable) IBOutlet UIView                                 *searchBarContainer;
 /*!
  Outlet for search bar height to make appear and disappear
  */
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint                     *searchBarContainerHeightConstraint;
+@property (weak, nonatomic,nullable) IBOutlet NSLayoutConstraint                     *searchBarContainerHeightConstraint;
 /*!
  Standard search button
  */
-@property (weak, nonatomic) IBOutlet UIBarButtonItem                        *searchButton;
+@property (weak, nonatomic,nullable) IBOutlet UIBarButtonItem                        *searchButton;
 /*!
  button outlet enabled and disabled based on whether there is a current selection
  */
-@property (weak, nonatomic) IBOutlet UIBarButtonItem                        *getSelectedButton;
+@property (weak, nonatomic,nullable) IBOutlet UIBarButtonItem                        *getSelectedButton;
 /*!
  Hold Current search so it can be cancelled
  */
-@property (weak,nonatomic) CKQueryOperation                                 *currentSearchOperation;
-@property(nonatomic,assign)BOOL                                             handlingFetchRequestErrorWasPostponed;
-@property(nonatomic,strong)NSError                                          *fetchRequestError;
-@property (assign, nonatomic) BOOL                                          textWasEdited;
+@property (weak,nonatomic,nullable) CKQueryOperation                                 *currentSearchOperation;
+@property(nonatomic,assign)BOOL                                                     handlingFetchRequestErrorWasPostponed;
+@property(nonatomic,strong,nullable)NSError                                          *fetchRequestError;
+@property (assign, nonatomic) BOOL                                                  textWasEdited;
 /*!
  Setup the search bar controller
  */
@@ -104,8 +104,8 @@
  
  @param error the fetch error
  */
--(void) handleFetchRequestError: (NSError*)error;
--(void)presentFetchErrorAlertTitle: (NSString*)title message: (NSString*)message withActions: (NSMutableArray<UIAlertAction*>*)alertActions;
+-(void) handleFetchRequestError: (NSError* _Nullable)error;
+-(void)presentFetchErrorAlertTitle: (NSString* _Nullable)title message: (NSString* _Nullable)message withActions: (NSMutableArray<UIAlertAction*>* _Nullable)alertActions;
 /*!
  Download action
  

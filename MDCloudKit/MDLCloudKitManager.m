@@ -119,11 +119,10 @@
                                        // In your app, handle this error really beautifully.
                                        NSLog(@"An error occured in %@: %@", NSStringFromSelector(_cmd), error);
 //                                       abort();
-                                   } else {
-                                       dispatch_async(dispatch_get_main_queue(), ^{
-                                           completionHandler(applicationPermissionStatus == CKApplicationPermissionStatusGranted);
-                                       });
                                    }
+                                   dispatch_async(dispatch_get_main_queue(), ^{
+                                       completionHandler(applicationPermissionStatus == CKApplicationPermissionStatusGranted);
+                                   });
                                }];
 }
 
