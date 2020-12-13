@@ -54,7 +54,7 @@
 -(void) fetchCloudRecordsWithPredicate: (NSPredicate*)predicate sortDescriptors: (NSArray*)descriptors timeout:(NSTimeInterval)timeout
 {
     self.getSelectedButton.enabled = NO;
-    NSDate* fetchStartDate = [NSDate date];
+//    NSDate* fetchStartDate = [NSDate date];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self startNetworkTimerWithInterval: timeout];
@@ -121,7 +121,7 @@
 
              [self stopNetworkTimer];
              
-             NSTimeInterval fetchInterval = [fetchStartDate timeIntervalSinceNow];
+//             NSTimeInterval fetchInterval = [fetchStartDate timeIntervalSinceNow];
              
              if (!error)
              {
@@ -381,18 +381,19 @@
                                                             preferredStyle: UIAlertControllerStyleActionSheet];
     
     UIAlertController* __weak weakAlert = alert;
-    
+    MDCKBaseCloudBrowserViewController* __weak weakSelf = self;
+
     //    ALAuthorizationStatus cameraAuthStatus = [ALAssetsLibrary authorizationStatus];
     
-    UIAlertAction* fractalCloud = [UIAlertAction actionWithTitle:@"Go to iCloud Settings" style:UIAlertActionStyleDefault
+    UIAlertAction* fractalCloud = [UIAlertAction actionWithTitle: NSLocalizedString(@"Go to iCloud Settings", nil) style:UIAlertActionStyleDefault
                                                          handler:^(UIAlertAction * action)
                                    {
                                        [weakAlert dismissViewControllerAnimated:YES completion:nil]; // because of popover mode
-                                       [self sendUserToSystemiCloudSettings: sender];
+                                       [weakSelf sendUserToSystemiCloudSettings: sender];
                                    }];
     [alert addAction: fractalCloud];
     
-    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Later Maybe" style:UIAlertActionStyleCancel
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle: NSLocalizedString(@"Later Maybe", nil) style:UIAlertActionStyleCancel
                                                           handler:^(UIAlertAction * action)
                                     {
                                         [weakAlert dismissViewControllerAnimated:YES completion:nil]; // because of popover mode
@@ -408,7 +409,10 @@
 
 -(void)sendUserToSystemiCloudSettings: (id)sender
 {
-    [[UIApplication sharedApplication] openURL: [NSURL URLWithString:@"prefs:root=iCloud"]];
+    NSURL* url = [NSURL URLWithString: UIApplicationOpenSettingsURLString];
+    [[UIApplication sharedApplication] openURL: url options: @{} completionHandler:^(BOOL success) {
+        return;
+    }];
 }
 
 -(void)updateCollectionViewOffsetForNavAndSearch
